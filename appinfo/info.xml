@@ -3,11 +3,11 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>LarpingApp</id>
 	<name>Larping</name>
-	<summary>Sort story about larping</summary>
-	<description>Long story about larping</description>
-	<version>1.0.0</version>
+	<summary>Larp registry app</summary>
+	<description>This application is to register players for an event and keeping track of their Characters</description>
+	<version>0.0.1</version>
 	<licence>eupl 1.2</licence>
-	<author mail="info@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
+	<author mail="Matthias@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
 	<namespace>LarpingApp</namespace>
 	<category>dashboard</category>
 	<bugs>https://github.com/ConductionNL/LarpingNextApp/issues</bugs>
@@ -23,4 +23,7 @@
 			<order>9</order>
 		</navigation>
 	</navigations>
+	<settings>
+		<admin>OCA\LarpingApp\Settings\Admin</admin>
+	</settings>
 </info>
