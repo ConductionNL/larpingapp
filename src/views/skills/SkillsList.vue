@@ -31,7 +31,7 @@ import { store } from '../../store.js'
 				</NcActions>
 			</div>
 			<div v-if="!loading">
-				<NcListItem v-for="(zaken, i) in zakenList.results"
+				<NcListItem v-for="(zaken, i) in store.skillsList.results"
 					:key="`${zaken}${i}`"
 					:name="zaken?.name"
 					:active="store.zakenItem === zaken?.id"

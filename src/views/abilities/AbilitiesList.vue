@@ -31,7 +31,7 @@ import { store } from '../../store.js'
 				</NcActions>
 			</div>
 			<div v-if="!loading">
-				<NcListItem v-for="(rollen, i) in rollenList.results"
+				<NcListItem v-for="(rollen, i) in store.rollenList.results"
 					:key="`${rollen}${i}`"
 					:name="rollen?.name"
 					:active="store.rolId === rollen?.id"

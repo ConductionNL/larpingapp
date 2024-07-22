@@ -10,8 +10,9 @@ export const store = reactive({
 	modal: false,
 	modalData: [], // optional data to pass to the modal
 	// The curently active item (or object) , managed trought the state to ensure that only one modal can be active at the same time
-	zaakItem: false,
-	zaakTypeItem: false,
+	characterItem: false,
+	charactersList: false,
+
 	klantItem: false,
 	klantenList: false,
 	taakItem: false,
@@ -34,94 +35,25 @@ export const store = reactive({
 		console.log('Active modal item set to ' + modal)
 	},
 	// The Bussens logic for zaken
-	setZaakItem(zaakItem) {
-		const zaakDefault = {
-			identificatie: '',
-			omschrijving: '',
-			bronorganisatie: '',
-			verantwoordelijkeOrganisatie: '',
-			startdatum: '',
-			archiefstatus: '',
-			registratiedatum: '',
-			toelichting: '',
+	setCharacterItem(characterItem) {
+		const characterDefault = {
+			naam: '',
+			description: '',
 		}
-		this.zaakItem = { ...zaakDefault, ...zaakItem }
-		console.log('Active zaak item set to ' + zaakItem)
+		this.characterItem = { ...characterDefault, ...characterItem }
+		console.log('Active zaak item set to ' + characterItem.id)
 	},
-	// The Bussens logic for zaaktypen
-	setZaakTypeItem(zaakTypeItem) {
-		const zaakTypeItemDefault = {
-			identificatie: '',
-			omschrijving: '',
-			omschrijvingGeneriek: '',
-			vertrouwelijkheidaanduiding: '',
-			doel: '',
-			aanleiding: '',
-			toelichting: '',
-			indicatieInternOfExtern: '',
-			handelingInitiator: '',
-			onderwerp: '',
-			handelingBehandelaar: '',
-			doorlooptijd: '',
-			servicenorm: '',
-			opschortingEnAanhoudingMogelijk: '',
-			verlengingMogelijk: '',
-			verlengingstermijn: '',
-			trefwoorden: [],
-			publicatieIndicatie: '',
-			publicatietekst: '',
-			verantwoordingsrelatie: '',
-			productenOfDiensten: '',
-			selectielijstProcestype: '',
-			referentieproces: '',
-			verantwoordelijke: '',
-			broncatalogus: '',
-			catalogus: '',
-			besluittypen: '',
-			deelzaaktypen: '',
-			gerelateerdeZaaktypen: '',
-			beginGeldigheid: '',
-			eindeGeldigheid: '',
-			beginObject: '',
-			eindeObject: '',
-			versiedatum: '',
-		}
-		this.zaakTypeItem = { ...zaakTypeItemDefault, ...zaakTypeItem }
-		console.log('Active zaak type item set to ' + zaakTypeItem)
-	},
-	// The Bussens logic for klanten
-	setKlantItem(klantItem) {
-		const klantItemDefault = {
-			voornaam: '',
-			tussenvoegsel: '',
-			achternaam: '',
-			telefoonnummer: '',
-			emailadres: '',
-			functie: '',
-			aanmaakkanaal: '',
-			bronorganisatie: '',
-			bedrijfsnaam: '',
-			websiteUrl: '',
-			url: '',
-			geverifieerd: '',
-			subject: '',
-			subjectIdentificatie: '',
-			subjectType: '',
-		}
-		this.klantItem = { ...klantItemDefault, ...klantItem }
-		console.log('Active klant item set to ' + klantItem)
-	},
-	getKlantenList() {
-		this.klantenList = false
+	getCharactersList() {
+		this.charactersList = false
 		fetch(
-			'/index.php/apps/zaakafhandelapp/api/klanten',
+			'/index.php/apps/larpingapp/api/characters',
 			{
 				method: 'GET',
 			},
 		)
 			.then((response) => {
 				response.json().then((data) => {
-					this.klantenList = data
+					this.charactersList = data
 				})
 			})
 			.catch((err) => {

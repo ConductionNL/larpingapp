@@ -31,9 +31,9 @@ import { store } from '../../store.js'
 				</NcActions>
 			</div>
 			<div v-if="!loading">
-				<NcListItem v-for="(character, i) in characterList.results"
+				<NcListItem v-for="(character, i) in store.charactersList.results"
 					:key="`${character}${i}`"
-					:name="character?.naam"
+					:name="character?.name"
 					:force-display-actions="true"
 					:active="store.characterItem.id === character?.id"
 					:details="'Aproved'"
@@ -101,55 +101,8 @@ export default {
 		Pencil,
 		TrashCanOutline,
 	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			zakenList: [],
-		}
-	},
 	mounted() {
-		this.fetchData()
-	},
-	methods: {
-		fetchData() {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		fetchDataWithSearch(search) {
-			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/zrc/zaken?${search}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
+		store.getCharactersList()
 	},
 }
 </script>
