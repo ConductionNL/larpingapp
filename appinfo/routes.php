@@ -2,6 +2,7 @@
 
 return [
 	'routes' => [
-		['name' => 'characters#index', 'url' => '/', 'verb' => 'GET']
+		// Page routes
+		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 	]
 ];

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-	<id>LarpingApp</id>
+	<id>larpingapp</id>
 	<name>Larping</name>
 	<summary>Larp registry app</summary>
 	<description>This application is to register players for an event and keeping track of their Characters</description>
@@ -12,18 +12,15 @@
 	<category>dashboard</category>
 	<bugs>https://github.com/ConductionNL/LarpingNextApp/issues</bugs>
 	<dependencies>
-		<nextcloud min-version="26" max-version="29"/>
+		<nextcloud min-version="26" max-version="30"/>
 	</dependencies>
 	<navigations>
 		<navigation>
 			<id>LarpingApp</id>
 			<name>Larping</name>
-			<route>larpingapp.characters.index</route>
+			<route>larpingapp.dashboard.page</route>
 			<icon>app.svg</icon>
 			<order>9</order>
 		</navigation>
 	</navigations>
-	<settings>
-		<admin>OCA\LarpingApp\Settings\Admin</admin>
-	</settings>
 </info>
