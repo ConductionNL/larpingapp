@@ -4,15 +4,15 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Character;
-use OCA\OpenCatalogi\Db\CharacterMapper;
+use OCA\opencatalogi\lib\Db\Template;
+use OCA\OpenCatalogi\Db\TemplateMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
 
-class CharactersController extends Controller
+class TemplatesController extends Controller
 {
     const TEST_ARRAY = [
         "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [

@@ -1,10 +1,9 @@
 <template>
 	<NcAppContent>
-		<template #default>
-			<div class="dashboardContainer">
-				<h1>Titel Dashboard</h1>
-			</div>
-		</template>
+		<h2 class="pageHeader">
+			Dashboard
+		</h2>
+		<b>Aantal zoekopdrachten afgelopen maand</B>
 	</NcAppContent>
 </template>
 
