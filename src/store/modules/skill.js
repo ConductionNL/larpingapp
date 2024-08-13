@@ -22,7 +22,7 @@ export const useSkillStore = defineStore(
 			/* istanbul ignore next */ // ignore this for Jest until moved into a service
 			async refreshSkillList(search = null) {
 				// @todo this might belong in a service?
-				let endpoint = '/index.php/apps/larping/api/skill'
+				let endpoint = '/index.php/apps/larpingapp/api/skills'
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}

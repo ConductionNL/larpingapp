@@ -8,7 +8,7 @@
 			<div class="listHeader">
 				<NcTextField
 					:value.sync="searchStore.search"
-					:show-trailing-button="search !== ''"
+					:show-trailing-button="searchStore.search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
@@ -30,14 +30,14 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
+			<div v-if="templateStore.templateList && templateStore.templateList.length > 0">
 				<NcListItem v-for="(rollen, i) in store.templateList.results"
 					:key="`${rollen}${i}`"
 					:name="rollen?.name"
 					:active="store.rolId === rollen?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setRolItem(rollen)">
+					@click="templateStore.setTemplateItem(rollen)">
 					<template #icon>
 						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
 							disable-menu
@@ -58,7 +58,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!templateStore.templateList  || templateStore.templateList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -95,9 +95,8 @@ export default {
 	},
 	methods: {
 		editRol(rol) {
-			store.setRolItem(rol)
-			store.setRolId(rol.id)
-			store.setModal('editRol')
+			templateStore.setTemplateItem(template)
+			navigationStore.setModal('editRol')
 		},
 		fetchData(newPage) {
 			this.loading = true

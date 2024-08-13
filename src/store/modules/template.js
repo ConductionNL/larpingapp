@@ -22,7 +22,7 @@ export const useTemplateStore = defineStore(
 			/* istanbul ignore next */ // ignore this for Jest until moved into a service
 			async refreshTemplateList(search = null) {
 				// @todo this might belong in a service?
-				let endpoint = '/index.php/apps/larping/api/template'
+				let endpoint = '/index.php/apps/larpingapp/api/templates'
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}

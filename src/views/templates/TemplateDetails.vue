@@ -53,10 +53,6 @@ export default {
 			deep: true,
 		},
 	},
-	// First time the is no emit so lets grap it directly
-	mounted() {
-		this.fetchData(store.rolItem.id)
-	},
 	methods: {
 		fetchData(rolId) {
 			this.loading = true

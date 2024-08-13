@@ -11,7 +11,7 @@
 					:value.sync="searchStore.search"
 					label="Search"
 					trailing-button-icon="close"
-					:show-trailing-button="search !== ''"
+					:show-trailing-button="searchStore.search !== ''"
 					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
@@ -30,8 +30,8 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="store.berichtenList">
-				<NcListItem v-for="(bericht, i) in itemStore.berichtenList.results"
+			<div v-if="itemStore.itemList && itemStore.itemList.length > 0">
+				<NcListItem v-for="(bericht, i) in itemStore.berichtenList"
 					:key="`${bericht}${i}`"
 					:name="bericht?.onderwerp"
 					:active="store.berichtId === bericht?.id"
@@ -65,7 +65,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!store.berichtenList"
+		<NcLoadingIcon v-if="!itemStore.itemList  || itemStore.itemList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"

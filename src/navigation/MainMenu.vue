@@ -86,9 +86,9 @@
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="navigationStore.selected === 'auditTrail'"
+				:active="navigationStore.selected === 'templates'"
 				name="Templates"
-				@click="navigationStore.setSelected('auditTrail')">
+				@click="navigationStore.setSelected('templates')">
 				<template #icon>
 					<FileDocumentOutline :size="20" />
 				</template>

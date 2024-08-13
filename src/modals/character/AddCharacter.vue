@@ -3,11 +3,11 @@ import { characterStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'addCharacter'" ref="modalRef" @close="navigationStore.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addCharacter'"  @close="navigationStore.setModal(false)">
 		<div class="modalContent">
-			<h2>Taak toevoegen</h2>
+			<h2>Karakter toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
+				<p>Karakter succesvol toegevoegd</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -23,7 +23,7 @@ import { characterStore, navigationStore } from '../../store/store.js'
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.taakItem.onderwerp || loading"
+				:disabled="!character.name || loading"
 				type="primary"
 				@click="addCharacter()">
 				<template #icon>
@@ -76,27 +76,27 @@ export default {
 		addCharacter() {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
+				'/index.php/apps/larpingapp/api/characters',
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(store.taakItem),
+					body: JSON.stringify(this.character),
 				},
 			)
 				.then((response) => {
 					this.succes = true
 					this.loading = false
-					store.getTakenList()
+					characterStore.refreshCharacterList()
 					response.json().then((data) => {
-						store.setTaakItem(data)
+						characterStore.setCharacterItem(data)
 					})
 					// Get the modal to self close
 					const self = this
 					setTimeout(function() {
 						self.succes = false
-						store.setModal(false)
+						navigationStore.setModal(false)
 					}, 2000)
 				})
 				.catch((err) => {

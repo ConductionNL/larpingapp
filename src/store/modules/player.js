@@ -22,7 +22,7 @@ export const usePlayerStore = defineStore(
 			/* istanbul ignore next */ // ignore this for Jest until moved into a service
 			async refreshPlayerList(search = null) {
 				// @todo this might belong in a service?
-				let endpoint = '/index.php/apps/larping/api/player'
+				let endpoint = '/index.php/apps/larpingapp/api/players'
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}

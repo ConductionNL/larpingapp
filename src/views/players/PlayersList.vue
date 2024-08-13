@@ -11,7 +11,7 @@
 					:value.sync="searchStore.search"
 					label="Search"
 					trailing-button-icon="close"
-					:show-trailing-button="search !== ''"
+					:show-trailing-button="searchStore.search !== ''"
 					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
@@ -30,11 +30,11 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(zaken, i) in store.zakenList.results"
-					:key="`${zaken}${i}`"
-					:name="zaken?.name"
-					:active="store.zakenItem === zaken?.id"
+			<div v-if="playerStore.playerList && playerStore.playerList.length > 0">
+				<NcListItem v-for="(player, i) in playerStore.playerList"
+					:key="`${player}${i}`"
+					:name="player?.name"
+					:active="playerStore.playerItem?.is === player?.id"
 					:details="'1h'"
 					:counter-number="44"
 					@click="store.setMetadataItem(zaken.id)">
@@ -61,7 +61,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!playerStore.playerList  || playerStore.playerList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"

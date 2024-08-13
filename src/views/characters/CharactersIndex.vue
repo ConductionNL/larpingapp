@@ -8,7 +8,7 @@
 			<CharactersList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!characterStore.characterItem || characterStore.selected != 'characters' "
+			<NcEmptyContent v-if="!characterStore.characterItem || navigationStore.selected != 'characters' "
 				class="detailContainer"
 				name="Geen Karakter"
 				description="Nog geen karakter geselecteerd">

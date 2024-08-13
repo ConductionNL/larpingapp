@@ -1,5 +1,5 @@
 <script setup>
-	import { abilityStore, navigationStore } from '../../store/store.js'
+	import { abilityStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,12 +7,12 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
-					:show-trailing-button="search !== ''"
+					:value.sync="searchStore.search"
+					:show-trailing-button="searchStore.search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -30,14 +30,14 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(rollen, i) in store.rollenList.results"
-					:key="`${rollen}${i}`"
-					:name="rollen?.name"
-					:active="store.rolId === rollen?.id"
+			<div v-if="abilityStore.abilityList  && abilityStore.abilityList.length === 0">
+				<NcListItem v-for="(ability, i) in abilityStore.abilityList"
+					:key="`${ability}${i}`"
+					:name="ability?.name"
+					:active="abilityStore.abilityItem.id === ability?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setRolItem(rollen)">
+					@click="abilityStore.setAbilityItem(rollen)">
 					<template #icon>
 						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
 							disable-menu
@@ -58,7 +58,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!abilityStore.abilityList  || abilityStore.abilityList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -95,9 +95,8 @@ export default {
 	},
 	methods: {
 		editRol(rol) {
-			store.setRolItem(rol)
-			store.setRolId(rol.id)
-			store.setModal('editRol')
+			abilityStore.setAbilityStoreItem(ab)
+			navigationStore.setModal('editRol')
 		},
 		fetchData(newPage) {
 			this.loading = true

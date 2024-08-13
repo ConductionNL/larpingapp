@@ -8,7 +8,7 @@
 			<PlayersList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.playerItem || navigationStore.selected != 'players' "
+			<NcEmptyContent v-if="!playerStore.playerItem || navigationStore.selected != 'players' "
 				class="detailContainer"
 				name="Geen speler"
 				description="Nog geen speler geselecteerd">
@@ -21,7 +21,7 @@
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<PlayerDetails v-if="store.playerItem && navigationStore.selected === 'players'" />
+			<PlayerDetails v-if="playerStore.playerItem && navigationStore.selected === 'players'" />
 		</template>
 	</NcAppContent>
 </template>

@@ -8,7 +8,7 @@
 			<SkillsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.skillItem || navigationStore.selected != 'skills' "
+			<NcEmptyContent v-if="!skillStore.skillItem || navigationStore.selected != 'skills' "
 				class="detailContainer"
 				name="Geen skil"
 				description="Nog geen skill geselecteerd">
@@ -21,7 +21,7 @@
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<SkillDetails v-if="store.skillItem && navigationStore.selected === 'skills'" />
+			<SkillDetails v-if="skillStore.skillItem && navigationStore.selected === 'skills'" />
 		</template>
 	</NcAppContent>
 </template>

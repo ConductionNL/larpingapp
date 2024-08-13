@@ -8,7 +8,7 @@
 			<AbilitiesList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.rolItem || store.selected != 'abilities' "
+			<NcEmptyContent v-if="!abilityStore.abilityItem || navigationStore.selected != 'abilities' "
 				class="detailContainer"
 				name="Geen vaardigheid"
 				description="Nog geen vaardigheid geselecteerd">
@@ -16,12 +16,12 @@
 					<ShieldSwordOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addAbility')">
+					<NcButton type="primary" @click="navigationStore.setModal('addAbility')">
 						Vaardigheid aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<AbilityDetails v-if="store.rolItem && store.selected === 'abilities'" />
+			<AbilityDetails v-if="abilityStore.abilityItem && navigationStore.selected === 'abilities'" />
 		</template>
 	</NcAppContent>
 </template>

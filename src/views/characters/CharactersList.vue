@@ -8,7 +8,7 @@
 			<div class="listHeader">
 				<NcTextField
 					:value.sync="searchStore.search"
-					:show-trailing-button="search !== ''"
+					:show-trailing-button="searchStore.search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addCharacter')">
+					<NcActionButton @click="navigationStore.setModal('addCharacter')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -30,17 +30,17 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(character, i) in characterStore.charactersList.results"
+			<div v-if="characterStore.characterList && characterStore.characterList.length > 0">
+				<NcListItem v-for="(character, i) in characterStore.characterList"
 					:key="`${character}${i}`"
 					:name="character?.name"
 					:force-display-actions="true"
-					:active="store.characterItem.id === character?.id"
+					:active="characterStore.characterItem?.id === character?.id"
 					:details="'Aproved'"
 					:counter-number="44"
-					@click="store.setCharacterItem(character)">
+					@click="characterStore.setCharacterItem(character)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="store.characterItem.id === character?.id && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="characterStore.characterItem?.id === character?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +48,13 @@
 						{{ character?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setCharacterItem(character); store.setModal('editCharacter')">
+						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setModal('editCharacter')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setCharacterItem(character); store.setDialog('deleteCharacter')">
+						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setDialog('deleteCharacter')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -65,7 +65,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!characterStore.characterList  || characterStore.characterList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"

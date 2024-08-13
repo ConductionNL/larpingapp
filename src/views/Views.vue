@@ -15,7 +15,7 @@
 			<AbilitiesIndex v-if="navigationStore.selected === 'abilities'" />
 			<SkillsIndex v-if="navigationStore.selected === 'skills'" />
 			<EffectsIndex v-if="navigationStore.selected === 'effects'" />
-			<AuditTrailIndex v-if="navigationStore.selected === 'auditTrail'" />
+			<TemplatesIndex v-if="navigationStore.selected === 'templates'" />
 		</template>
 	</NcAppContent>
 </template>
@@ -31,6 +31,7 @@ import EventsIndex from './events/EventsIndex.vue'
 import AbilitiesIndex from './abilities/AbilitiesIndex.vue'
 import SkillsIndex from './skills/SkillsIndex.vue'
 import EffectsIndex from './effects/EffectsIndex.vue'
+import TemplatesIndex from './templates/TemplatesIndex.vue'
 
 export default {
 	name: 'Views',
@@ -44,6 +45,7 @@ export default {
 		AbilitiesIndex,
 		SkillsIndex,
 		EffectsIndex,
+		TemplatesIndex,
 	},
 }
 </script>

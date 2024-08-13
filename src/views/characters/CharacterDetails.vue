@@ -4,48 +4,48 @@
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div v-if="characterStore.characterItem" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ store.characterItem.name }}
+						{{ characterStore.characterItem.name }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('editZaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addDocument')">
+						<NcActionButton @click="navigationStore.setModal('addDocument')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
 							Vaardigheid toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addRoll')">
+						<NcActionButton @click="navigationStore.setModal('addRoll')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
 							Item toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addTaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
 							Conditie toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addBericht')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
 							Als pdf downloaden
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('editZaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -56,7 +56,7 @@
 				<div class="detailGrid">
 					<div>
 						<b>Omschrijving:</b>
-						<span>{{ store.characterItem.description }}</span>
+						<span>{{ characterStore.characterItem.description }}</span>
 					</div>
 				</div>
 				<div class="tabContainer">

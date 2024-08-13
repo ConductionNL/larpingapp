@@ -8,7 +8,7 @@
 			<div class="listHeader">
 				<NcTextField
 					:value.sync="searchStore.search"
-					:show-trailing-button="search !== ''"
+					:show-trailing-button="searchStore.search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
@@ -30,7 +30,7 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
+			<div v-if="skillStore.skillList && skillStore.skillList.length > 0">
 				<NcListItem v-for="(zaken, i) in store.skillsList.results"
 					:key="`${zaken}${i}`"
 					:name="zaken?.name"
@@ -61,7 +61,7 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!skillStore.skillList  || skillStore.skillList.length === 0"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"

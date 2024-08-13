@@ -82,7 +82,7 @@ export default {
 		editCharacter() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,
+				`/index.php/apps/larpingapp/api/characters/${characterStore.characterItem.id}`,
 				{
 					method: 'PUT',
 					headers: {
@@ -94,15 +94,15 @@ export default {
 				.then((response) => {
 					this.succes = true
 					this.loading = false
-					store.getTakenList()
+					characterStore.refreshCharacterList()
 					response.json().then((data) => {
-						store.setTaakItem(data)
+						characterStore.setCharacterItem(data)
 					})
 					// Get the modal to self close
 					const self = this
 					setTimeout(function() {
 						self.succes = false
-						store.setModal(false)
+						navigationStore.setModal(false)
 					}, 2000)
 				})
 				.catch((err) => {

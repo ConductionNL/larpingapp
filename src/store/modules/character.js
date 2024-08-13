@@ -22,7 +22,7 @@ export const useCharacterStore = defineStore(
 			/* istanbul ignore next */ // ignore this for Jest until moved into a service
 			async refreshCharacterList(search = null) {
 				// @todo this might belong in a service?
-				let endpoint = '/index.php/apps/larping/api/character'
+				let endpoint = '/index.php/apps/larpingapp/api/characters'
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}
@@ -32,7 +32,7 @@ export const useCharacterStore = defineStore(
 					.then(
 						(response) => {
 							response.json().then(
-								(data) => {
+								(data) => {									
 									this.setCharacterList(data.results)
 								},
 							)
