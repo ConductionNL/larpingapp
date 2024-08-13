@@ -1,34 +1,19 @@
 import { Item } from './item'
 import { TItem } from './item.types'
 
-export const mockOrganisationData = (): TItem[] => [
-	{ // full data
+export const mockItemData = (): TItem[] => [
+	{
 		id: '1',
-		title: 'Decat',
-		summary: 'a short form summary',
-		description: 'a really really long description about this organisation',
-		oin: 'string',
-		tooi: 'string',
-		rsin: 'string',
-		pki: 'string',
+		name: 'Decat',
 	},
-	// @ts-expect-error -- missing oin, tooi, rsin and pki properties
 	{
 		id: '2',
-		title: 'Woo',
-		summary: 'a short form summary',
-		description: 'a really really long description about this organisation',
+		name: 'Woo',
 	},
-	{ // invalid data
+	{
 		id: '3',
-		title: '',
-		summary: 'a short form summary',
-		description: 'a really really long description about this organisation',
-		oin: 'string',
-		tooi: 'string',
-		rsin: 'string',
-		pki: 'string',
+		name: 'Foo',
 	},
 ]
 
-export const mockOrganisation = (data: TOrganisation[] = mockOrganisationData()): TOrganisation[] => data.map(item => new Organisation(item))
+export const mockItem = (data: TItem[] = mockItemData()): TItem[] => data.map(item => new Item(item))

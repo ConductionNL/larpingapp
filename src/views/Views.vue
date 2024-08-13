@@ -1,21 +1,21 @@
 <script setup>
-import { store } from '../store.js'
+	import { navigationStore } from '../store/store.js'
 </script>
 
 <template>
 	<!-- Placeholder div for all of the vieuws-->
 	<NcAppContent>
 		<template #default>
-			<DashboardIndex v-if="store.selected === 'dashboard'" />
-			<CharactersIndex v-if="store.selected === 'characters'" />
-			<PlayersIndex v-if="store.selected === 'players'" />
-			<ItemsIndex v-if="store.selected === 'items'" />
-			<SearchIndex v-if="store.selected === 'search'" />
-			<EventsIndex v-if="store.selected === 'events'" />
-			<AbilitiesIndex v-if="store.selected === 'abilities'" />
-			<SkillsIndex v-if="store.selected === 'skills'" />
-			<EffectsIndex v-if="store.selected === 'effects'" />
-			<AuditTrailIndex v-if="store.selected === 'auditTrail'" />
+			<DashboardIndex v-if="navigationStore.selected === 'dashboard'" />
+			<CharactersIndex v-if="navigationStore.selected === 'characters'" />
+			<PlayersIndex v-if="navigationStore.selected === 'players'" />
+			<ItemsIndex v-if="navigationStore.selected === 'items'" />
+			<SearchIndex v-if="navigationStore.selected === 'search'" />
+			<EventsIndex v-if="navigationStore.selected === 'events'" />
+			<AbilitiesIndex v-if="navigationStore.selected === 'abilities'" />
+			<SkillsIndex v-if="navigationStore.selected === 'skills'" />
+			<EffectsIndex v-if="navigationStore.selected === 'effects'" />
+			<AuditTrailIndex v-if="navigationStore.selected === 'auditTrail'" />
 		</template>
 	</NcAppContent>
 </template>

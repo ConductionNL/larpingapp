@@ -1,28 +1,19 @@
 import { Template } from './template'
 import { TTemplate } from './template.types'
 
-export const mockThemeData = (): TTemplate[] => [
-	{ // full data
+export const mockTemplateData = (): TTemplate[] => [
+	{
 		id: '1',
-		title: 'Decat',
-		summary: 'a short form summary',
-		description: 'a really really long description about this Theme',
-		image: 'string',
+		name: 'Decat',
 	},
-	// @ts-expect-error -- expected missing image property
-	{ // partial data
+	{
 		id: '2',
-		title: 'Woo',
-		summary: 'a short form summary',
-		description: 'a really really long description about this Theme',
+		name: 'Woo',
 	},
-	{ // invalid data
+	{
 		id: '3',
-		title: '',
-		summary: 'a short form summary',
-		description: 'a really really long description about this Theme',
-		image: 'string',
+		name: 'Foo',
 	},
 ]
 
-export const mockTheme = (data: TTemplate[] = mockThemeData()): TTemplate[] => data.map(item => new Template(item))
+export const mockTemplate = (data: TTemplate[] = mockTemplateData()): TTemplate[] => data.map(item => new Template(item))

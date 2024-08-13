@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 
 export const useNavigationStore = defineStore(
-	'ui', {
+	'navigation', {
 		state: () => ({
 			// The currently active menu item, defaults to '' which triggers the dashboard
 			selected: 'dashboard',

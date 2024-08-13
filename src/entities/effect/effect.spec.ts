@@ -2,31 +2,31 @@
 import { Effect } from './effect'
 import { mockEffect } from './effect.mock'
 
-describe('Listing Store', () => {
-	it('create Listing entity with full data', () => {
-		const listing = new Listing(mockListings()[0])
+describe('Effect Store', () => {
+	it('create Effect entity with full data', () => {
+		const effect = new Effect(mockEffect()[0])
 
-		expect(listing).toBeInstanceOf(Listing)
-		expect(listing).toEqual(mockListings()[0])
+		expect(effect).toBeInstanceOf(Effect)
+		expect(effect).toEqual(mockEffect()[0])
 
-		expect(listing.validate().success).toBe(true)
+		expect(effect.validate().success).toBe(true)
 	})
 
-	it('create Listing entity with partial data', () => {
-		const listing = new Listing(mockListings()[1])
+	it('create Effect entity with partial data', () => {
+		const effect = new Effect(mockEffect()[1])
 
-		expect(listing).toBeInstanceOf(Listing)
-		expect(listing).toEqual(mockListings()[1])
+		expect(effect).toBeInstanceOf(Effect)
+		expect(effect).toEqual(mockEffect()[1])
 
-		expect(listing.validate().success).toBe(true)
+		expect(effect.validate().success).toBe(true)
 	})
 
-	it('create Listing entity with falsy data', () => {
-		const listing = new Listing(mockListings()[2])
+	it('create Effect entity with falsy data', () => {
+		const effect = new Effect(mockEffect()[2])
 
-		expect(listing).toBeInstanceOf(Listing)
-		expect(listing).toEqual(mockListings()[2])
+		expect(effect).toBeInstanceOf(Effect)
+		expect(effect).toEqual(mockEffect()[2])
 
-		expect(listing.validate().success).toBe(false)
+		expect(effect.validate().success).toBe(false)
 	})
 })

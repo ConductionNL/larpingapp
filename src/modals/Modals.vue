@@ -1,50 +1,62 @@
 <template>
 	<!-- Placeholder -->
 	<div>
-		<AddZaak />
-		<EditZaak />
-		<AddZaakType />
-		<EditZaakType />
-		<AddKlant />
-		<EditKlant />
-		<AddBericht />
-		<EditBericht />
-		<AddTaak />
-		<EditTaak />
-		<AddRol />
-		<EditRol />
+		<AddAbility />
+		<EditAbility />
+		<AddCharacter />
+		<EditCharacter />
+		<AddCondition />
+		<EditCondition />
+		<AddEvent />
+		<EditEvent />
+		<AddItem />
+		<EditItem />
+		<AddPlayer />
+		<EditPlayer />
+		<AddSkill />
+		<EditSkill />
+		<AddTemplate />
+		<EditTemplate />
 	</div>
 </template>
 
 <script>
-import AddZaak from './zaken/AddZaak.vue'
-import EditZaak from './zaken/EditZaak.vue'
-import AddZaakType from './zaakTypen/AddZaakType.vue'
-import EditZaakType from './zaakTypen/EditZaakType.vue'
-import AddKlant from './klanten/AddKlant.vue'
-import EditKlant from './klanten/EditKlant.vue'
-import AddBericht from './berichten/AddBericht.vue'
-import EditBericht from './berichten/EditBericht.vue'
-import AddTaak from './taken/AddTaak.vue'
-import EditTaak from './taken/EditTaak.vue'
-import AddRol from './rollen/AddRol.vue'
-import EditRol from './rollen/EditRol.vue'
+import AddAbility from './ability/AddAbility.vue'
+import EditAbility from './ability/EditAbility.vue'
+import AddCharacter from './character/AddCharacter.vue'
+import EditCharacter from './character/EditCharacter.vue'
+import AddCondition from './condition/AddCondition.vue'
+import EditCondition from './condition/EditCondition.vue'
+import AddEvent from './event/AddEvent.vue'
+import EditEvent from './event/EditEvent.vue'
+import AddItem from './item/AddItem.vue'
+import EditItem from './item/EditItem.vue'
+import AddPlayer from './player/AddPlayer.vue'
+import EditPlayer from './player/EditPlayer.vue'
+import AddSkill from './skill/AddSkill.vue'
+import EditSkill from './skill/EditSkill.vue'
+import AddTemplate from './template/AddTemplate.vue'
+import EditTemplate from './template/EditTemplate.vue'
 
 export default {
 	name: 'Modals',
 	components: {
-		AddZaak,
-		EditZaak,
-		AddZaakType,
-		EditZaakType,
-		AddKlant,
-		EditKlant,
-		AddBericht,
-		EditBericht,
-		AddTaak,
-		EditTaak,
-		AddRol,
-		EditRol,
+		AddAbility,
+		EditAbility,
+		AddCharacter,
+		EditCharacter,
+		AddCondition,
+		EditCondition,
+		AddEvent,
+		EditEvent,
+		AddItem,
+		EditItem,
+		AddPlayer,
+		AddSkill,
+		EditSkill,
+		EditPlayer,
+		AddTemplate,
+		EditTemplate,
 	},
 }
 </script>

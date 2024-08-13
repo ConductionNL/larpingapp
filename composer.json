@@ -4,9 +4,19 @@
 	"license": "AGPL-3.0-or-later",
 	"authors": [
 		{
+			"name": "Conduction b.v.",
+			"email": "info@conduction.nl",
+			"homepage": "https://conduction.nl"
+		},
+		{
 			"name": "Remko Huisman (Conduction)",
 			"email": "remko@conduction.nl",
-			"homepage": ""
+			"homepage": "https://conduction.nl"
+		},
+		{
+			"name": "Ruben van der Linde (Conduction)",
+			"email": "ruben@conduction.nl",
+			"homepage": "https://conduction.nl"
 		}
 	],
 	"autoload": {
@@ -29,8 +39,13 @@
 		"openapi": "generate-spec"
 	},
 	"require": {
+		"php": "^8.1",
+		"adbario/php-dot-notation": "^3.3.0",
 		"bamarni/composer-bin-plugin": "^1.8",
-		"php": "^8.1"
+		"elasticsearch/elasticsearch": "^v8.14.0",
+		"adbario/php-dot-notation": "^3.3.0",
+		"guzzlehttp/guzzle": "^7.0",
+		"symfony/uid": "^6.4"
 	},
 	"require-dev": {
 		"nextcloud/ocp": "dev-stable29",
@@ -38,7 +53,8 @@
 	},
 	"config": {
 		"allow-plugins": {
-			"bamarni/composer-bin-plugin": true
+			"bamarni/composer-bin-plugin": true,
+			"php-http/discovery": true
 		},
 		"optimize-autoloader": true,
 		"sort-packages": true,

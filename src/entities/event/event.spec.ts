@@ -2,31 +2,31 @@
 import { Event } from './event'
 import { mockEvent } from './event.mock'
 
-describe('Metadata entity', () => {
-	it('create Metadata entity with full data', () => {
-		const metadata = new Metadata(mockMetadata()[0])
+describe('Event entity', () => {
+	it('create Event entity with full data', () => {
+		const event = new Event(mockEvent()[0])
 
-		expect(metadata).toBeInstanceOf(Metadata)
-		expect(metadata).toEqual(mockMetadata()[0])
+		expect(event).toBeInstanceOf(Event)
+		expect(event).toEqual(mockEvent()[0])
 
-		expect(metadata.validate().success).toBe(true)
+		expect(event.validate().success).toBe(true)
 	})
 
-	it('create Metadata entity with partial data', () => {
-		const metadata = new Metadata(mockMetadata()[1])
+	it('create Event entity with partial data', () => {
+		const event = new Event(mockEvent()[1])
 
-		expect(metadata).toBeInstanceOf(Metadata)
-		expect(metadata).toEqual(mockMetadata()[1])
+		expect(event).toBeInstanceOf(Event)
+		expect(event).toEqual(mockEvent()[1])
 
-		expect(metadata.validate().success).toBe(true)
+		expect(event.validate().success).toBe(true)
 	})
 
-	it('create Metadata entity with falsy data', () => {
-		const metadata = new Metadata(mockMetadata()[2])
+	it('create Event entity with falsy data', () => {
+		const event = new Event(mockEvent()[2])
 
-		expect(metadata).toBeInstanceOf(Metadata)
-		expect(metadata).toEqual(mockMetadata()[2])
+		expect(event).toBeInstanceOf(Event)
+		expect(event).toEqual(mockEvent()[2])
 
-		expect(metadata.validate().success).toBe(false)
+		expect(event.validate().success).toBe(false)
 	})
 })

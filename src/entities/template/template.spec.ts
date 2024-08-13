@@ -2,35 +2,32 @@
 import { Template } from './template'
 import { mockTemplate } from './template.mock'
 
-describe('Theme Store', () => {
-	it('create Theme entity with full data', () => {
-		const theme = new Theme(mockTheme()[0])
+describe('Template Store', () => {
+	it('create Template entity with full data', () => {
+		const template = new Template(mockTemplate()[0])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme).toEqual(mockTheme()[0])
+		expect(template).toBeInstanceOf(Template)
+		expect(template).toEqual(mockTemplate()[0])
 
-		expect(theme.validate().success).toBe(true)
+		expect(template.validate().success).toBe(true)
 	})
 
-	it('create Theme entity with partial data', () => {
-		const theme = new Theme(mockTheme()[1])
+	it('create Template entity with partial data', () => {
+		const template = new Template(mockTemplate()[1])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme.id).toBe(mockTheme()[1].id)
-		expect(theme.title).toBe(mockTheme()[1].title)
-		expect(theme.summary).toBe(mockTheme()[1].summary)
-		expect(theme.description).toBe(mockTheme()[1].description)
-		expect(theme.image).toBe('')
+		expect(template).toBeInstanceOf(Template)
+		expect(template.id).toBe(mockTemplate()[1].id)
+		expect(template.name).toBe(mockTemplate()[1].name)
 
-		expect(theme.validate().success).toBe(true)
+		expect(template.validate().success).toBe(true)
 	})
 
-	it('create Theme entity with falsy data', () => {
-		const theme = new Theme(mockTheme()[2])
+	it('create Template entity with falsy data', () => {
+		const template = new Template(mockTemplate()[2])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme).toEqual(mockTheme()[2])
+		expect(template).toBeInstanceOf(Template)
+		expect(template).toEqual(mockTemplate()[2])
 
-		expect(theme.validate().success).toBe(false)
+		expect(template.validate().success).toBe(false)
 	})
 })

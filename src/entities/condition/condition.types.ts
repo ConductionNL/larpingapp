@@ -1,4 +1,4 @@
 export type TCondition = {
-    useElastic: boolean
-    useMongo: boolean
+    id: string
+	name: string
 }

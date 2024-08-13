@@ -1,33 +1,33 @@
 /* eslint-disable no-console */
-import { Publication } from './player'
-import { mockPublications } from './publication.mock'
+import { Player } from './player'
+import { mockPlayer } from './player.mock'
 
 describe('Directory Store', () => {
-	it('create Publication entity with full data', () => {
-		const publication = new Publication(mockPublications()[0])
+	it('create Player entity with full data', () => {
+		const player = new Player(mockPlayer()[0])
 
-		expect(publication).toBeInstanceOf(Publication)
-		expect(publication).toEqual(mockPublications()[0])
+		expect(player).toBeInstanceOf(Player)
+		expect(player).toEqual(mockPlayer()[0])
 
-		expect(publication.validate().success).toBe(true)
+		expect(player.validate().success).toBe(true)
 	})
 
-	it('create Publication entity with partial data', () => {
-		const publication = new Publication(mockPublications()[1])
+	it('create Player entity with partial data', () => {
+		const player = new Player(mockPlayer()[1])
 
-		expect(publication).toBeInstanceOf(Publication)
-		expect(publication).toEqual(mockPublications()[1])
-		expect(publication.status).toBe('Concept')
+		expect(player).toBeInstanceOf(Player)
+		expect(player).toEqual(mockPlayer()[1])
+		expect(player.name).toBe(mockPlayer()[1].name)
 
-		expect(publication.validate().success).toBe(true)
+		expect(player.validate().success).toBe(true)
 	})
 
-	it('create Publication entity with falsy data', () => {
-		const publication = new Publication(mockPublications()[2])
+	it('create Player entity with falsy data', () => {
+		const player = new Player(mockPlayer()[2])
 
-		expect(publication).toBeInstanceOf(Publication)
-		expect(publication).toEqual(mockPublications()[2])
+		expect(player).toBeInstanceOf(Player)
+		expect(player).toEqual(mockPlayer()[2])
 
-		expect(publication.validate().success).toBe(false)
+		expect(player.validate().success).toBe(false)
 	})
 })

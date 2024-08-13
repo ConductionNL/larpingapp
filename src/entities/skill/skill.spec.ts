@@ -2,35 +2,32 @@
 import { Skill } from './skill'
 import { mockSkill } from './skill.mock'
 
-describe('Theme Store', () => {
-	it('create Theme entity with full data', () => {
-		const theme = new Theme(mockTheme()[0])
+describe('Skill Store', () => {
+	it('create Skill entity with full data', () => {
+		const skill = new Skill(mockSkill()[0])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme).toEqual(mockTheme()[0])
+		expect(skill).toBeInstanceOf(Skill)
+		expect(skill).toEqual(mockSkill()[0])
 
-		expect(theme.validate().success).toBe(true)
+		expect(skill.validate().success).toBe(true)
 	})
 
-	it('create Theme entity with partial data', () => {
-		const theme = new Theme(mockTheme()[1])
+	it('create Skill entity with partial data', () => {
+		const skill = new Skill(mockSkill()[1])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme.id).toBe(mockTheme()[1].id)
-		expect(theme.title).toBe(mockTheme()[1].title)
-		expect(theme.summary).toBe(mockTheme()[1].summary)
-		expect(theme.description).toBe(mockTheme()[1].description)
-		expect(theme.image).toBe('')
+		expect(skill).toBeInstanceOf(Skill)
+		expect(skill.id).toBe(mockSkill()[1].id)
+		expect(skill.name).toBe(mockSkill()[1].name)
 
-		expect(theme.validate().success).toBe(true)
+		expect(skill.validate().success).toBe(true)
 	})
 
-	it('create Theme entity with falsy data', () => {
-		const theme = new Theme(mockTheme()[2])
+	it('create Skill entity with falsy data', () => {
+		const skill = new Skill(mockSkill()[2])
 
-		expect(theme).toBeInstanceOf(Theme)
-		expect(theme).toEqual(mockTheme()[2])
+		expect(skill).toBeInstanceOf(Skill)
+		expect(skill).toEqual(mockSkill()[2])
 
-		expect(theme.validate().success).toBe(false)
+		expect(skill.validate().success).toBe(false)
 	})
 })

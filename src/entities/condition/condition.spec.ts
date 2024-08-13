@@ -2,31 +2,31 @@
 import { Condition } from './condition'
 import { mockCondition } from './condition.mock'
 
-describe('Configuration Store', () => {
-	it('create Configuration entity with full data', () => {
-		const configuration = new Configuration(mockConfiguration()[0])
+describe('Condition Store', () => {
+	it('create Condition entity with full data', () => {
+		const condition = new Condition(mockCondition()[0])
 
-		expect(configuration).toBeInstanceOf(Configuration)
-		expect(configuration).toEqual(mockConfiguration()[0])
+		expect(condition).toBeInstanceOf(Condition)
+		expect(condition).toEqual(mockCondition()[0])
 
-		expect(configuration.validate().success).toBe(true)
+		expect(condition.validate().success).toBe(true)
 	})
 
-	it('create Configuration entity with partial data', () => {
-		const configuration = new Configuration(mockConfiguration()[1])
+	it('create Condition entity with partial data', () => {
+		const condition = new Condition(mockCondition()[1])
 
-		expect(configuration).toBeInstanceOf(Configuration)
-		expect(configuration.useElastic).toBe(mockConfiguration()[1].useElastic)
+		expect(condition).toBeInstanceOf(Condition)
+		expect(condition.name).toBe(mockCondition()[1].name)
 
-		expect(configuration.validate().success).toBe(true)
+		expect(condition.validate().success).toBe(true)
 	})
 
-	it('create Configuration entity with falsy data', () => {
-		const configuration = new Configuration(mockConfiguration()[2])
+	it('create Condition entity with falsy data', () => {
+		const condition = new Condition(mockCondition()[2])
 
-		expect(configuration).toBeInstanceOf(Configuration)
-		expect(configuration).toEqual(mockConfiguration()[2])
+		expect(condition).toBeInstanceOf(Condition)
+		expect(condition).toEqual(mockCondition()[2])
 
-		expect(configuration.validate().success).toBe(false)
+		expect(condition.validate().success).toBe(false)
 	})
 })

@@ -1,38 +1,19 @@
-import { Catalogi } from './character'
-import { TCatalogi } from './character.types'
+import { Character } from './character'
+import { TCharacter } from './character.types'
 
-export const mockCatalogiData = (): TCatalogi[] => [
+export const mockCharacterData = (): TCharacter[] => [
 	{
 		id: '1',
-		title: 'Decat',
-		summary: 'a short form summary',
-		description: 'a really really long description about this catalogus',
-		image: 'string',
-		listed: false,
-		organisation: '23',
-		metadata: ['1', '3'],
+		name: 'Decat',
 	},
 	{
 		id: '2',
-		title: 'Woo',
-		summary: 'a short form summary',
-		description: 'a really really long description about this catalogus',
-		image: '',
-		listed: false,
-		organisation: '23',
-		metadata: [],
+		name: 'Woo',
 	},
 	{
 		id: '3',
-		title: 'Foo',
-		summary: 'a short form summary',
-		description: 'a really really long description about this catalogus',
-		image: 'string',
-		// @ts-expect-error -- listed needs to be a boolean
-		listed: 0.2,
-		organisation: '23',
-		metadata: ['1', '3'],
+		name: 'Foo',
 	},
 ]
 
-export const mockCatalogi = (data: TCatalogi[] = mockCatalogiData()): TCatalogi[] => data.map(item => new Catalogi(item))
+export const mockCharacter = (data: TCharacter[] = mockCharacterData()): TCharacter[] => data.map(item => new Character(item))

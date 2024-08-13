@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../store.js'
+	import { navigationStore } from '../store/store.js'
 </script>
 
 <template>
@@ -11,49 +11,49 @@ import { store } from '../store.js'
 				</template>
 			</NcAppNavigationNew>
 			<NcAppNavigationItem
-				:active="store.selected === 'dashboard'"
+				:active="navigationStore.selected === 'dashboard'"
 				name="Dashboard"
-				@click="store.setSelected('dashboard')">
+				@click="navigationStore.setSelected('dashboard')">
 				<template #icon>
 					<Finance :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'characters'"
+				:active="navigationStore.selected === 'characters'"
 				name="Karakters"
-				@click="store.setSelected('characters')">
+				@click="navigationStore.setSelected('characters')">
 				<template #icon>
 					<BriefcaseAccountOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'players'"
+				:active="navigationStore.selected === 'players'"
 				name="Spelers"
-				@click="store.setSelected('players')">
+				@click="navigationStore.setSelected('players')">
 				<template #icon>
 					<AccountGroupOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'items'"
+				:active="navigationStore.selected === 'items'"
 				name="Items"
-				@click="store.setSelected('items')">
+				@click="navigationStore.setSelected('items')">
 				<template #icon>
 					<Sword :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'events'"
+				:active="navigationStore.selected === 'events'"
 				name="Events"
-				@click="store.setSelected('events')">
+				@click="navigationStore.setSelected('events')">
 				<template #icon>
 					<CalendarMonthOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'search'"
+				:active="navigationStore.selected === 'search'"
 				name="Zoeken"
-				@click="store.setSelected('search')">
+				@click="navigationStore.setSelected('search')">
 				<template #icon>
 					<Magnify :size="20" />
 				</template>
@@ -62,33 +62,33 @@ import { store } from '../store.js'
 
 		<NcAppNavigationSettings>
 			<NcAppNavigationItem
-				:active="store.selected === 'abilities'"
+				:active="navigationStore.selected === 'abilities'"
 				name="Abilities"
-				@click="store.setSelected('abilities')">
+				@click="navigationStore.setSelected('abilities')">
 				<template #icon>
 					<ShieldSwordOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'skills'"
+				:active="navigationStore.selected === 'skills'"
 				name="Skills"
-				@click="store.setSelected('skills')">
+				@click="navigationStore.setSelected('skills')">
 				<template #icon>
 					<SwordCross :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'effects'"
+				:active="navigationStore.selected === 'effects'"
 				name="Effects"
-				@click="store.setSelected('effects')">
+				@click="navigationStore.setSelected('effects')">
 				<template #icon>
 					<MagicStaff :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'auditTrail'"
+				:active="navigationStore.selected === 'auditTrail'"
 				name="Templates"
-				@click="store.setSelected('auditTrail')">
+				@click="navigationStore.setSelected('auditTrail')">
 				<template #icon>
 					<FileDocumentOutline :size="20" />
 				</template>

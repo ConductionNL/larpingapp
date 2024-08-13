@@ -1,20 +1,19 @@
 import { Condition } from './condition'
 import { TCondition } from './condition.types'
 
-export const mockConfigurationData = (): TCondition[] => [
-	{ // full data
-		useElastic: true,
-		useMongo: true,
+export const mockConditionData = (): TCondition[] => [
+	{
+		id: '1',
+		name: 'Decat',
 	},
-	// @ts-expect-error -- useMongo doesn't exist
-	{ // partial data
-		useElastic: true,
+	{
+		id: '2',
+		name: 'Woo',
 	},
-	{ // invalid data
-		// @ts-expect-error -- useElastic is supposed to be a boolean
-		useElastic: 'string',
-		useMongo: false,
+	{
+		id: '3',
+		name: 'Foo',
 	},
 ]
 
-export const mockConfiguration = (data: TConfiguration[] = mockConfigurationData()): TConfiguration[] => data.map(item => new Configuration(item))
+export const mockCondition = (data: TCondition[] = mockConditionData()): TCondition[] => data.map(item => new Condition(item))
