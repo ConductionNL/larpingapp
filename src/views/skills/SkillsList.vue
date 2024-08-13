@@ -1,5 +1,5 @@
 <script setup>
-	import { skillStore, navigationStore } from '../../store/store.js'
+	import { skillStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,12 +7,12 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="searchStore.search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -94,7 +94,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		skillStore.refreshSkillList()
 	},
 	methods: {
 		fetchData(newPage) {

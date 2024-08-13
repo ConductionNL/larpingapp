@@ -3,7 +3,7 @@ import { templateStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'addTaak'" ref="modalRef" @close="navigationStore.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addTemplate'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Taak toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -49,7 +49,7 @@ import { templateStore, navigationStore } from '../../store/store.js'
 				v-if="!succes"
 				:disabled="!store.taakItem.onderwerp || loading"
 				type="primary"
-				@click="addTaak()">
+				@click="addTemplate()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
@@ -73,7 +73,7 @@ import {
 import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
-	name: 'AddTaak',
+	name: 'AddTemplate',
 	components: {
 		NcModal,
 		NcTextField,
@@ -97,12 +97,8 @@ export default {
 			}],
 		}
 	},
-	mounted() {
-		// Lets create an empty zaak item
-		store.setTaakItem([])
-	},
 	methods: {
-		addTaak() {
+		addTemplate() {
 			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken',

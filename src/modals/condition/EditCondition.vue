@@ -3,7 +3,7 @@ import { condtionStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'editTaak'" ref="modalRef" @close="navigationStore.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editCondition'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Taak aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -16,40 +16,16 @@ import { condtionStore, navigationStore } from '../../store/store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.taakItem.title"
-					label="Titel"
+					:value.sync="abilityStore.abilityItem.name"
+					label="Naam"
 					maxlength="255" />
-
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.type"
-					label="Type"
-					maxlength="255" />
-
-				<NcSelect
-					v-bind="statusOptions"
-					v-model="store.taakItem.status"
-					:disabled="loading"
-					input-label="Status"
-					required />
-
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.onderwerp"
-					label="Onderwerp"
-					maxlength="255" />
-
-				<NcTextArea
-					:disabled="loading"
-					:value.sync="store.taakItem.toelichting"
-					label="Toelichting" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
 				:disabled="loading"
 				type="primary"
-				@click="editTaak()">
+				@click="editCondition()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
@@ -72,7 +48,7 @@ import {
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
-	name: 'EditTaak',
+	name: 'AditCondition',
 	components: {
 		NcModal,
 		NcTextField,
@@ -103,7 +79,7 @@ export default {
 		}
 	},
 	methods: {
-		editTaak() {
+		editCondition() {
 			this.loading = true
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,

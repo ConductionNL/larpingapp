@@ -1,5 +1,5 @@
 <script setup>
-	import { effectStore, navigationStore } from '../../store/store.js'
+	import { effectStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,12 +7,12 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="searchStore.search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -31,7 +31,7 @@
 				</NcActions>
 			</div>
 			<div v-if="store.klantenList">
-				<NcListItem v-for="(klant, i) in store.klantenList.results"
+				<NcListItem v-for="(klant, i) in effectStore.klantenList.results"
 					:key="`${klant}${i}`"
 					:name="fullName(klant)"
 					:active="store.klantId === klant?.id"
@@ -107,7 +107,7 @@ export default {
 		}
 	},
 	mounted() {
-		store.getKlantenList()
+		effectStore.refreshEffectsList()
 	},
 	methods: {
 		fullName(klant) {

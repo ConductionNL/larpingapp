@@ -8,7 +8,7 @@
 			<SkillsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.skillItem || store.selected != 'skills' "
+			<NcEmptyContent v-if="!store.skillItem || navigationStore.selected != 'skills' "
 				class="detailContainer"
 				name="Geen skil"
 				description="Nog geen skill geselecteerd">
@@ -16,12 +16,12 @@
 					<SwordCross />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addSkill')">
+					<NcButton type="primary" @click="navigationStore.setModal('addSkill')">
 						Skill toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<SkillDetails v-if="store.skillItem && store.selected === 'skills'" />
+			<SkillDetails v-if="store.skillItem && navigationStore.selected === 'skills'" />
 		</template>
 	</NcAppContent>
 </template>

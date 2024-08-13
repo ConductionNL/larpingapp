@@ -8,7 +8,7 @@
 			<EffectsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.effectItem || !store.effectItem.id || store.selected != 'effects' "
+			<NcEmptyContent v-if="!effectStore.effectItem || navigationStore.selected != 'effects' "
 				class="detailContainer"
 				name="Geen effect"
 				description="Nog geen effect geselecteerd">
@@ -16,12 +16,12 @@
 					<MagicStaff />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addEffect')">
+					<NcButton type="primary" @click="navigationStore.setModal('addEffect')">
 						Effect toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<EffectDetails v-if="store.effectItem && store.effectItem.id && store.selected === 'effects'" />
+			<EffectDetails v-if="effectStore.effectItem && navigationStore.selected === 'effects'" />
 		</template>
 	</NcAppContent>
 </template>

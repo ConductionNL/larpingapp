@@ -8,7 +8,7 @@
 			<ItemsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.itemItem || !store.itemItem.id || store.selected != 'items' "
+			<NcEmptyContent v-if="!itemStore.itemItem || navigationStore.selected != 'items' "
 				class="detailContainer"
 				name="Geen item"
 				description="Nog geen item geselecteerd">
@@ -16,12 +16,12 @@
 					<Sword />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addItem')">
+					<NcButton type="primary" @click="navigationStore.setModal('addItem')">
 						Item aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ItemDetails v-if="store.itemItem && store.itemItem.id && store.selected === 'items'" />
+			<ItemDetails v-if="itemStore.itemItem && navigationStore.selected === 'items'" />
 		</template>
 	</NcAppContent>
 </template>

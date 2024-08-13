@@ -1,5 +1,5 @@
 <script setup>
-	import { characterStore, navigationStore } from '../../store/store.js'
+	import { characterStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,12 +7,12 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="searchStore.search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -31,7 +31,7 @@
 				</NcActions>
 			</div>
 			<div v-if="!loading">
-				<NcListItem v-for="(character, i) in store.charactersList.results"
+				<NcListItem v-for="(character, i) in characterStore.charactersList.results"
 					:key="`${character}${i}`"
 					:name="character?.name"
 					:force-display-actions="true"
@@ -102,7 +102,7 @@ export default {
 		TrashCanOutline,
 	},
 	mounted() {
-		store.getCharactersList()
+		characterStore.refreshCharacterList()
 	},
 }
 </script>

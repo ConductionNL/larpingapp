@@ -5,7 +5,7 @@
 <template>
 	<NcAppNavigation>
 		<NcAppNavigationList>
-			<NcAppNavigationNew text="Karakter toevoegen" @click="store.setModal('addCharacter')">
+			<NcAppNavigationNew text="Karakter toevoegen" @click="navigationStore.setModal('addCharacter')">
 				<template #icon>
 					<Plus :size="20" />
 				</template>

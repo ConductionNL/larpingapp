@@ -16,40 +16,16 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.taakItem.title"
-					label="Titel"
+					:value.sync="ability.name"
+					label="Naam"
 					maxlength="255" />
-
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.type"
-					label="Type"
-					maxlength="255" />
-
-				<NcSelect
-					v-bind="statusOptions"
-					v-model="store.taakItem.status"
-					:disabled="loading"
-					input-label="Status"
-					required />
-
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.onderwerp"
-					label="Onderwerp"
-					maxlength="255" />
-
-				<NcTextArea
-					:disabled="loading"
-					:value.sync="store.taakItem.toelichting"
-					label="Toelichting" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.taakItem.onderwerp || loading"
+				:disabled="!abilityStore.abilityItem.name || loading"
 				type="primary"
-				@click="addTaak()">
+				@click="addAbility()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
@@ -73,7 +49,7 @@ import {
 import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
-	name: 'AddTaak',
+	name: 'AddAbility',
 	components: {
 		NcModal,
 		NcTextField,
@@ -90,19 +66,14 @@ export default {
 			succes: false,
 			loading: false,
 			error: false,
-			// Opties
-			statusOptions: [{
-				key: 'key',
-				value: 'value',
-			}],
+			// Opties			
+			ability: {
+				name: '',
+			},
 		}
 	},
-	mounted() {
-		// Lets create an empty zaak item
-		store.setTaakItem([])
-	},
 	methods: {
-		addTaak() {
+		addAbility() {
 			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken',

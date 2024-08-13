@@ -8,7 +8,7 @@
 			<PlayersList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.playerItem || store.selected != 'players' "
+			<NcEmptyContent v-if="!store.playerItem || navigationStore.selected != 'players' "
 				class="detailContainer"
 				name="Geen speler"
 				description="Nog geen speler geselecteerd">
@@ -16,12 +16,12 @@
 					<AccountGroupOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addPlayer')">
+					<NcButton type="primary" @click="navigationStore.setModal('addPlayer')">
 						Speler aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<PlayerDetails v-if="store.playerItem && store.selected === 'players'" />
+			<PlayerDetails v-if="store.playerItem && navigationStore.selected === 'players'" />
 		</template>
 	</NcAppContent>
 </template>

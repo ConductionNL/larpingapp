@@ -8,7 +8,7 @@
 			<CharactersList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.characterItem || !store.characterItem.id || store.selected != 'characters' "
+			<NcEmptyContent v-if="!characterStore.characterItem || characterStore.selected != 'characters' "
 				class="detailContainer"
 				name="Geen Karakter"
 				description="Nog geen karakter geselecteerd">
@@ -16,12 +16,12 @@
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addCharacter')">
+					<NcButton type="primary" @click="navigationStore.setModal('addCharacter')">
 						Karakter aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<CharacterDetails v-if="store.characterItem && store.characterItem && store.selected === 'characters'" />
+			<CharacterDetails v-if="characterStore.characterItem && navigationStore.selected === 'characters'" />
 		</template>
 	</NcAppContent>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-	import { eventStore, navigationStore } from '../../store/store.js'
+	import { eventStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,12 +7,12 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="searchStore.search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -30,7 +30,7 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="store.takenList">
+			<div v-if="eventStore.takenList">
 				<NcListItem v-for="(taak, i) in store.takenList.results"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
@@ -107,7 +107,7 @@ export default {
 		}
 	},
 	mounted() {
-		store.getTakenList()
+		eventStore.refreshEventsList()
 	},
 	methods: {
 		clearText() {

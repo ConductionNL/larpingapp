@@ -1,5 +1,5 @@
 <script setup>
-	import { playerStore, navigationStore } from '../../store/store.js'
+	import { playerStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,11 +8,11 @@
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
-					:value.sync="search"
+					:value.sync="searchStore.search"
 					label="Search"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
-					@trailing-button-click="store.setSearch('')">
+					@trailing-button-click="searchStore.setSearch('')">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -94,7 +94,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		playerStore.refreshPlayersList()
 	},
 	methods: {
 		fetchData(newPage) {

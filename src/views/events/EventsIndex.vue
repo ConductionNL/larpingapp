@@ -8,7 +8,7 @@
 			<EventsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.eventItem || !store.eventItem.id || store.selected != 'events' "
+			<NcEmptyContent v-if="!eventStore.eventItem || navigationStore.selected != 'events' "
 				class="detailContainer"
 				name="Geen event"
 				description="Nog geen event geselecteerd">
@@ -16,12 +16,12 @@
 					<CalendarMonthOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addEvents')">
+					<NcButton type="primary" @click="navigationStore.setModal('addEvents')">
 						Event toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<EventDetails v-if="store.eventItem && store.eventItem.id && store.selected === 'events'" />
+			<EventDetails v-if="eventStore.eventItem && navigationStore.selected === 'events'" />
 		</template>
 	</NcAppContent>
 </template>

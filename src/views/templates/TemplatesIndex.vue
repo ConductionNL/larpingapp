@@ -8,7 +8,7 @@
 			<TemplatesList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.templateItem || store.selected != 'templates' "
+			<NcEmptyContent v-if="!store.templateItem || navigationStore.selected != 'templates' "
 				class="detailContainer"
 				name="Geen template"
 				description="Nog geen template geselecteerd">
@@ -16,12 +16,12 @@
 					<FileDocumentOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addTemplate')">
+					<NcButton type="primary" @click="navigationStore.setModal('addTemplate')">
 						Vaardigheid aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<TemplateDetails v-if="store.templateItem && store.selected === 'templates'" />
+			<TemplateDetails v-if="store.templateItem && navigationStore.selected === 'templates'" />
 		</template>
 	</NcAppContent>
 </template>
