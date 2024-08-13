@@ -31,16 +31,16 @@
 				</NcActions>
 			</div>
 			<div v-if="itemStore.itemList && itemStore.itemList.length > 0">
-				<NcListItem v-for="(bericht, i) in itemStore.berichtenList"
-					:key="`${bericht}${i}`"
-					:name="bericht?.onderwerp"
-					:active="store.berichtId === bericht?.id"
+				<NcListItem v-for="(item, i) in itemStore.itemList"
+					:key="`${item}${i}`"
+					:name="item?.summery"
+					:active="itemStore.itemItem?.id === item?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="store.setBerichtItem(bericht)">
+					@click="itemStore.setItemItem(item)">
 					<template #icon>
-						<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
+						<ChatOutline :class="itemStore.itemItem?.id === item?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +48,13 @@
 						{{ bericht?.berichttekst }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setBerichtItem(bericht); store.setModal('editBericht')">
+						<NcActionButton @click="itemStore.setItemItem(bericht); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setBerichtItem(bericht); store.setDialog('deleteBericht')">
+						<NcActionButton @click="itemStore.setItemItem(bericht); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -86,7 +86,7 @@ import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ItemsList',
-	components: {
+	components: {		
 		// Components
 		NcListItem,
 		NcActions,
@@ -110,7 +110,7 @@ export default {
 		}
 	},
 	mounted() {
-		itemStore.refreshItemsList()
+		itemStore.refreshItemList()
 	},
 	methods: {
 		clearText() {

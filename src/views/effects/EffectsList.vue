@@ -89,6 +89,7 @@ export default {
 	components: {
 		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
@@ -107,7 +108,7 @@ export default {
 		}
 	},
 	mounted() {
-		effectStore.refreshEffectsList()
+		effectStore.refreshEffectList()
 	},
 	methods: {
 		fullName(klant) {

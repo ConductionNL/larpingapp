@@ -66,22 +66,26 @@
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 export default {
 	name: 'AbilitiesList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		ChatOutline,
 		Magnify,
-		NcLoadingIcon,
 	},
 	data() {
 		return {
@@ -91,7 +95,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		abilityStore.refreshAbilityList()
 	},
 	methods: {
 		editRol(rol) {

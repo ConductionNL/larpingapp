@@ -1,44 +1,50 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
+import { Event } from '../../entities/index.js'
 
 export const useEventStore = defineStore(
-	'ui', {
+	'event', {
 		state: () => ({
-			// The currently active menu item, defaults to '' which triggers the dashboard
-			selected: 'dashboard',
-			// The currently selected catalogi within 'publications'
-			selectedCatalogus: false,
-			// The currently active modal, managed trough the state to ensure that only one modal can be active at the same time
-			modal: false,
-			// The currently active dialog
-			dialog: false,
-			// Any data needed in various models, dialogs, views which cannot be transferred through normal means or without writing crappy/excessive code
-			transferData: null,
+			eventItem: false,
+			eventList: [],
 		}),
 		actions: {
-			setSelected(selected) {
-				this.selected = selected
-				console.log('Active menu item set to ' + selected)
+			setEventItem(eventItem) {
+				this.eventItem = eventItem && new Event(eventItem)
+				console.log('Active event item set to ' + eventItem)
 			},
-			setSelectedCatalogus(selectedCatalogus) {
-				this.selectedCatalogus = selectedCatalogus
-				console.log('Active catalogus menu set to ' + selectedCatalogus)
+			setEventList(eventList) {
+				this.eventList = eventList.map(
+					(eventItem) => new Event(eventItem),
+				)
+				console.log('Ability list set to ' + eventList.length + ' items')
 			},
-			setModal(modal) {
-				this.modal = modal
-				console.log('Active modal set to ' + modal)
-			},
-			setDialog(dialog) {
-				this.dialog = dialog
-				console.log('Active dialog set to ' + dialog)
-			},
-			setTransferData(data) {
-				this.transferData = data
-			},
-			getTransferData() {
-				const tempData = this.transferData
-				this.transferData = null
-				return tempData
+			/* istanbul ignore next */ // ignore this for Jest until moved into a service
+			async refreshEventList(search = null) {
+				// @todo this might belong in a service?
+				let endpoint = '/index.php/apps/larpingapp/api/events'
+				if (search !== null && search !== '') {
+					endpoint = endpoint + '?_search=' + search
+				}
+				return fetch(
+					endpoint, {
+						method: 'GET',
+					},
+				)
+					.then(
+						(response) => {
+							response.json().then(
+								(data) => {
+									this.setEventList(data.results)
+								},
+							)
+						},
+					)
+					.catch(
+						(err) => {
+							console.error(err)
+						},
+					)
 			},
 		},
 	},

@@ -31,30 +31,30 @@
 				</NcActions>
 			</div>
 			<div v-if="eventStore.eventList && eventStore.eventList.length > 0">
-				<NcListItem v-for="(taak, i) in store.takenList"
-					:key="`${taak}${i}`"
-					:name="taak?.title"
+				<NcListItem v-for="(event, i) in eventStore.eventList"
+					:key="`${event}${i}`"
+					:name="event?.title"
 					:force-display-actions="true"
-					:active="store.taakId === taak?.id"
+					:active="eventStore.eventItem?.id === event?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setTaakItem(taak)">
+					@click="eventStore.setEventItem(event)">
 					<template #icon>
-						<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
+						<CalendarMonthOutline :class="eventStore.eventItem?.id === event.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ taak?.onderwerp }}
+						{{ event?.summery }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setTaakItem(taak); store.setModal('editTaak')">
+						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setTaakItem(taak); store.setDialog('deleteTaak')">
+						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -89,6 +89,7 @@ export default {
 	components: {
 		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
@@ -107,7 +108,7 @@ export default {
 		}
 	},
 	mounted() {
-		eventStore.refreshEventsList()
+		eventStore.refreshEventList()
 	},
 	methods: {
 		clearText() {

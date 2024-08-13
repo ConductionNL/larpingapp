@@ -66,22 +66,26 @@
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 export default {
 	name: 'TemplatesList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		ChatOutline,
 		Magnify,
-		NcLoadingIcon,
 	},
 	data() {
 		return {

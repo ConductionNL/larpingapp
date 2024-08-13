@@ -34,17 +34,17 @@
 				<NcListItem v-for="(player, i) in playerStore.playerList"
 					:key="`${player}${i}`"
 					:name="player?.name"
-					:active="playerStore.playerItem?.is === player?.id"
+					:active="playerStore.playerItem?.id === player?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setMetadataItem(zaken.id)">
+					@click="playerStore.setPlayerItem(player)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="playerStore.playerItem?.id === player.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ zaken?.summary }}
+						{{ player?.summary }}
 					</template>
 					<template #actions>
 						<NcActionButton>
@@ -69,56 +69,29 @@
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'PlayersList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		BriefcaseAccountOutline,
 		Magnify,
-		NcLoadingIcon,
-	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			zakenList: [],
-		}
 	},
 	mounted() {
-		playerStore.refreshPlayersList()
-	},
-	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		clearText() {
-			this.search = ''
-		},
+		playerStore.refreshPlayerList()
 	},
 }
 </script>
