@@ -11,5 +11,4 @@ new Vue(
 		pinia,
 		render: h => h(App),
 	},
-).$mount('#larpingapp')
-
+).$mount('#content')
