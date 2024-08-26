@@ -45,7 +45,6 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
 			<name>Larping</name>
 			<route>larpingapp.dashboard.page</route>
 			<icon>app.svg</icon>
-			<order>9</order>
 		</navigation>
 	</navigations>
 

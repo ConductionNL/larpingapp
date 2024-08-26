@@ -3,7 +3,7 @@
 use OCP\Util;
 
 $appId = OCA\LarpingApp\AppInfo\Application::APP_ID;
-Util::addScript($appId, $appId . '-mainScript');
+Util::addScript($appId, $appId . '-main');
 Util::addStyle($appId, 'main');
 ?>
 

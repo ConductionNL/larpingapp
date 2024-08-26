@@ -13,8 +13,8 @@ webpackConfig.stats = {
 const appId = 'larpingapp'
 webpackConfig.entry = {
 	main: {
-		import: path.join(__dirname, 'src', 'mainScript.js'),
-		filename: appId + '-mainScript.js',
+		import: path.join(__dirname, 'src', 'main.js'),
+		filename: appId + '-main.js',
 	},
 }
 

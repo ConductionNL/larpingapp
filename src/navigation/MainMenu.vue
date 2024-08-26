@@ -1,5 +1,5 @@
 <script setup>
-	import { navigationStore } from '../store/store.js'
+import { navigationStore } from '../store/store.js'
 </script>
 
 <template>
@@ -93,7 +93,6 @@
 					<FileDocumentOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
-			<Configuration />
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
 </template>
@@ -147,32 +146,3 @@ export default {
 	},
 }
 </script>
-<style>
-table {
-	table-layout: fixed;
-}
-
-td.row-name {
-	padding-inline-start: 16px;
-}
-
-td.row-size {
-	text-align: right;
-	padding-inline-end: 16px;
-}
-
-.table-header {
-	font-weight: normal;
-	color: var(--color-text-maxcontrast);
-}
-
-.sort-icon {
-	color: var(--color-text-maxcontrast);
-	position: relative;
-	inset-inline: -10px;
-}
-
-.row-size .sort-icon {
-	inset-inline: 10px;
-}
-</style>
