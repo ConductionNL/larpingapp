@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addRoll')">
+					<NcActionButton @click="store.setModal('addTemplate')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Rol toevoegen
+						Template toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -46,11 +46,17 @@
 					<template #subname>
 						{{ rollen?.summary }}
 					</template>
-					<template #actions>
-						<NcActionButton @click="editRol(rol)">
+					<template #actions>						
+						<NcActionButton @click="templateStore.setTemlateItem(template); navigationStore.setModal('editTemlate')">
+							<template #icon>
+								<Plus/>
+							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="templateStore.setTemlateItem(template), navigationStore.setDialog('deleteTemplate')">
+							<template #icon>
+								<TrashCanOutline/>
+							</template>
 							Verwijderen
 						</NcActionButton>
 					</template>
@@ -72,6 +78,10 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
 
 export default {
 	name: 'TemplatesList',
@@ -86,6 +96,10 @@ export default {
 		// Icons
 		ChatOutline,
 		Magnify,
+		Plus,
+		Pencil,
+		TrashCanOutline,
+		Refresh,
 	},
 	data() {
 		return {

@@ -16,7 +16,7 @@ import { condtionStore, navigationStore } from '../../store/store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="abilityStore.abilityItem.name"
+					:value.sync="conditionStore.conditionItem.name"
 					label="Naam"
 					maxlength="255" />
 			</div>
@@ -44,6 +44,7 @@ import {
 	NcTextArea,
 	NcSelect,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
@@ -56,6 +57,7 @@ export default {
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 	},
@@ -66,51 +68,22 @@ export default {
 			error: false,
 		}
 	},
-	updated() {
-		if (store.modal === 'editTaak' && this.hasUpdated) {
-			if (this.taak === store.taakItem) return
-			this.hasUpdated = false
-		}
-		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.taak = store.taakItem
-			this.fetchZaken()
-			this.setStatusOptions()
-			this.hasUpdated = true
-		}
-	},
 	methods: {
-		editCondition() {
+		async editCondition() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(store.taakItem),
-				},
-			)
-				.then((response) => {
-					this.succes = true
-					this.loading = false
-					store.getTakenList()
-					response.json().then((data) => {
-						store.setTaakItem(data)
-					})
-					// Get the modal to self close
-					const self = this
-					setTimeout(function() {
-						self.succes = false
-						navigationStore.setModal(false)
-					}, 2000)
-				})
-				.catch((err) => {
-					this.loading = false
-					this.error = err
-					console.error(err)
-				})
-		},
+			try {
+				await this.conditionStore.saveCondition(this.conditionStore.conditionItem)
+				// Close modal or show success message
+				this.succes = true
+				this.loading = false
+				setTimeout(function() {
+					this.navigationStore.setModal(false)
+				}, 2000)
+			} catch (error) {
+				this.loading = false
+				this.succes = error
+			}
+		}
 	},
 }
 </script>

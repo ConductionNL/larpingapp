@@ -5,7 +5,7 @@ export class Event implements TEvent {
 	id?: string
 	name: string
 	description?: string
-	characters?: string[] // Array of Character UUIDs
+	players?: string[] // Array of Character UUIDs
 	effects?: string[] // Array of Effect UUIDs
 	startDate?: string
 	endDate?: string
@@ -15,7 +15,7 @@ export class Event implements TEvent {
 		this.id = event.id
 		this.name = event.name
 		this.description = event.description
-		this.characters = event.characters
+		this.players = event.players
 		this.effects = event.effects
 		this.startDate = event.startDate
 		this.endDate = event.endDate

@@ -49,7 +49,7 @@ import { templateStor0e, navigationStore } from '../../store/store.js'
 				v-if="!succes"
 				:disabled="loading"
 				type="primary"
-				@click="editTaak()">
+				@click="editTemplate()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
@@ -68,6 +68,7 @@ import {
 	NcTextArea,
 	NcSelect,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
@@ -80,6 +81,7 @@ export default {
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 	},
@@ -90,51 +92,22 @@ export default {
 			error: false,
 		}
 	},
-	updated() {
-		if (store.modal === 'editTaak' && this.hasUpdated) {
-			if (this.taak === store.taakItem) return
-			this.hasUpdated = false
-		}
-		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.taak = store.taakItem
-			this.fetchZaken()
-			this.setStatusOptions()
-			this.hasUpdated = true
-		}
-	},
 	methods: {
-		editTaak() {
+		async editTemplate() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(store.taakItem),
-				},
-			)
-				.then((response) => {
-					this.succes = true
-					this.loading = false
-					store.getTakenList()
-					response.json().then((data) => {
-						store.setTaakItem(data)
-					})
-					// Get the modal to self close
-					const self = this
-					setTimeout(function() {
-						self.succes = false
-						navigationStore.setModal(false)
-					}, 2000)
-				})
-				.catch((err) => {
-					this.loading = false
-					this.error = err
-					console.error(err)
-				})
-		},
+			try {
+				await this.templateStore.saveTemplate(this.templateStore.templateItem)
+				// Close modal or show success message
+				this.succes = true
+				this.loading = false
+				setTimeout(function() {
+					this.navigationStore.setModal(false)
+				}, 2000)
+			} catch (error) {
+				this.loading = false
+				this.succes = error
+			}
+		}
 	},
 }
 </script>

@@ -75,6 +75,7 @@ export default {
 	methods: {
 		addAbility() {
 			this.loading = true
+			
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken',
 				{

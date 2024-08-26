@@ -44,6 +44,78 @@ export const useCharacterStore = defineStore(
 						},
 					)
 			},
+			// New function to get a single character
+			async getCharacter(id) {
+				const endpoint = `/index.php/apps/larpingapp/api/characters/${id}`
+				try {
+					const response = await fetch(endpoint, {
+						method: 'GET',
+					})
+					const data = await response.json()
+					this.setCharacterItem(data)
+					return data
+				} catch (err) {
+					console.error(err)
+					throw err
+				}
+			},
+			// Delete a character
+			deleteCharacter() {
+				if (!this.characterItem || !this.characterItem.id) {
+					throw new Error('No character item to delete')
+				}
+
+				console.log('Deleting character...')
+
+				const endpoint = `/index.php/apps/larpingapp/api/characters/${this.characterItem.id}`
+
+				return fetch(endpoint, {
+					method: 'DELETE',
+				})
+					.then((response) => {
+						this.refreshCharacterList()
+					})
+					.catch((err) => {
+						console.error('Error deleting character:', err)
+						throw err
+					})
+			},
+			// Create or save a character from store
+			saveCharacter() {
+				if (!this.characterItem) {
+					throw new Error('No character item to save')
+				}
+
+				console.log('Saving character...')
+
+				const isNewCharacter = !this.characterItem.id
+				const endpoint = isNewCharacter
+					? '/index.php/apps/larpingapp/api/characters'
+					: `/index.php/apps/larpingapp/api/characters/${this.characterItem.id}`
+				const method = isNewCharacter ? 'POST' : 'PUT'				
+
+				return fetch(
+					endpoint,
+					{
+						method: method,
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(this.characterItem),
+					},
+				)
+					.then((response) => response.json())
+					.then((data) => {
+						this.setCharacterItem(data)
+						console.log('Character saved')
+						// Refresh the character list
+						return this.refreshCharacterList()
+					})
+					.catch((err) => {
+						console.error('Error saving character:', err)
+						throw err
+					})
+			},
 		},
 	},
 )

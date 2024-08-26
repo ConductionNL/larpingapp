@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addTaak')">
+					<NcActionButton @click="store.setModal('addEvent')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Taak toevoegen
+						Event toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -48,15 +48,15 @@
 						{{ event?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setModal('editTaak')">
+						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setModal('editEvent')">
 							<template #icon>
-								<Pencil :size="20" />
+								<Plus/>
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setDialog('deleteTaak')">
+						<NcActionButton @click="eventStore.setEventItem(event), navigationStore.setDialog('deleteEvent')">
 							<template #icon>
-								<TrashCanOutline :size="20" />
+								<TrashCanOutline/>
 							</template>
 							Verwijderen
 						</NcActionButton>
@@ -97,6 +97,7 @@ export default {
 		// Icons
 		CalendarMonthOutline,
 		Magnify,
+		Plus,
 		Pencil,
 		TrashCanOutline,
 	},

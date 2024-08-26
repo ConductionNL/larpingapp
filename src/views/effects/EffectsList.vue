@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addKlant')">
+					<NcActionButton @click="store.setModal('addEffect')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Klant toevoegen
+						Effect toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -50,13 +50,13 @@
 					<template #actions>
 						<NcActionButton @click="effectStore.setEffectItem(effect); navigationStore.setModal('editEffect')">
 							<template #icon>
-								<Pencil :size="20" />
+								<Plus/>
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="effectStore.setEffectItem(effect); navigationStore.setDialog('deleteEffect')">
+						<NcActionButton @click="effectStore.setEffectItem(effect), navigationStore.setDialog('deleteEffect')">
 							<template #icon>
-								<TrashCanOutline :size="20" />
+								<TrashCanOutline/>
 							</template>
 							Verwijderen
 						</NcActionButton>
@@ -83,7 +83,6 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
-
 export default {
 	name: 'EffectsList',
 	components: {

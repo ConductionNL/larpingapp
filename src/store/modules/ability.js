@@ -38,6 +38,61 @@ export const useAbilityStore = defineStore(
 						console.error(err)
 					})
 			},
+			deleteAbility() {
+				if (!this.abilityItem || !this.abilityItem.id) {
+					throw new Error('No ability item to delete')
+				}
+
+				console.log('Deleting ability...')
+
+				const endpoint = `/index.php/apps/larpingapp/api/abilities/${this.abilityItem.id}`
+
+				return fetch(endpoint, {
+					method: 'DELETE',
+				})
+					.then((response) => {
+						this.refreshAbilityList()
+					})
+					.catch((err) => {
+						console.error('Error deleting ability:', err)
+						throw err
+					})
+			},
+
+			saveAbility() {
+				if (!this.abilityItem) {
+					throw new Error('No ability item to save')
+				}
+
+				console.log('Saving ability...')
+
+				const isNewAbility = !this.abilityItem.id
+				const endpoint = isNewAbility
+					? '/index.php/apps/larpingapp/api/abilities'
+					: `/index.php/apps/larpingapp/api/abilities/${this.abilityItem.id}`
+				const method = isNewAbility ? 'POST' : 'PUT'
+
+				return fetch(
+					endpoint,
+					{
+						method: method,
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(this.abilityItem),
+					},
+				)
+					.then((response) => response.json())
+					.then((data) => {
+						this.setAbilityItem(data)
+						console.log('Ability saved')
+						return this.refreshAbilityList()
+					})
+					.catch((err) => {
+						console.error('Error saving ability:', err)
+						throw err
+					})
+			},
 		},
 	},
 )

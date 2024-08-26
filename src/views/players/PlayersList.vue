@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addBesluit')">
+					<NcActionButton @click="store.setModal('addPlayer')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Besluit toevoegen
+						Speler toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -47,14 +47,17 @@
 						{{ player?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton>
-							Button one
+						<NcActionButton @click="playerStore.setPlayerItem(player); navigationStore.setModal('editPlayer')">
+							<template #icon>
+								<Plus/>
+							</template>
+							Bewerken
 						</NcActionButton>
-						<NcActionButton>
-							Button two
-						</NcActionButton>
-						<NcActionButton>
-							Button three
+						<NcActionButton @click="playerStore.setPlayerItem(player), navigationStore.setDialog('deletePlayer')">
+							<template #icon>
+								<TrashCanOutline/>
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -75,6 +78,10 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
 
 export default {
 	name: 'PlayersList',
@@ -89,6 +96,10 @@ export default {
 		// Icons
 		BriefcaseAccountOutline,
 		Magnify,
+		Plus,
+		Pencil,
+		TrashCanOutline,
+		Refresh,
 	},
 	mounted() {
 		playerStore.refreshPlayerList()

@@ -9,87 +9,43 @@ use OCP\AppFramework\Db\Entity;
 class Skill extends Entity implements JsonSerializable
 {
 
-	protected ?string $title 	    = null;
-	protected ?string $summary      = null;
-	protected ?string $description  = null;
-	protected ?string $image        = null;
-	protected ?string $search	    = null;
-
-	protected bool    $listed       = false;
-	protected ?string $organisation = null;
-	protected ?array   $metadata    = null;
+	protected ?string $id = null;
+	protected ?string $name = null;
+	protected ?string $description = null;
+	protected ?string $effect = null;
+	protected ?array $effects = null;
+	protected ?array $requiredSkills = [];
+	protected ?array $requiredStats = [];
+	protected ?array $requiredConditions = [];
+	protected ?array $requiredEffects = [];
+	protected ?int $requiredScore = null;
 
 	public function __construct() {
-		$this->addType(fieldName: 'title', type: 'string');
-		$this->addType(fieldName: 'summary', type: 'string');
-		$this->addType(fieldName: 'description', type: 'string');
-		$this->addType(fieldName: 'image', type: 'string');
-		$this->addType(fieldName: 'search', type: 'string');
-		$this->addType(fieldName: 'listed', type: 'boolean');
-		$this->addType(fieldName: 'organisation', type: 'string');
-		$this->addType(fieldName: 'metadata', type: 'json');
-
-	}
-
-	public function getJsonFields(): array
-	{
-		return array_keys(
-			array_filter($this->getFieldTypes(), function ($field) {
-				return $field === 'json';
-			})
-		);
-	}
-
-	public function hydrate(array $object): self
-	{
-
-
-		if(isset($object['metadata']) === false) {
-			$object['metadata'] = [];
-		}
-
-		$jsonFields = $this->getJsonFields();
-
-		foreach($object as $key => $value) {
-			if (in_array($key, $jsonFields) === true && $value === []) {
-				$value = [];
-			}
-
-			$method = 'set'.ucfirst($key);
-
-			try {
-				$this->$method($value);
-			} catch (\Exception $exception) {
-//				var_dump("Error writing $key");
-			}
-		}
-
-		return $this;
+		$this->addType('id', 'string');
+		$this->addType('name', 'string');
+		$this->addType('description', 'string');
+		$this->addType('effect', 'string');
+		$this->addType('effects', 'json');
+		$this->addType('requiredSkills', 'array');
+		$this->addType('requiredStats', 'array');
+		$this->addType('requiredConditions', 'array');
+		$this->addType('requiredEffects', 'array');
+		$this->addType('requiredScore', 'integer');
 	}
 
 	public function jsonSerialize(): array
 	{
-		$array = [
+		return [
 			'id' => $this->id,
-			'title' => $this->title,
-			'summary' => $this->summary,
+			'name' => $this->name,
 			'description' => $this->description,
-			'image' => $this->image,
-			'search' => $this->search,
-			'listed' => $this->listed,
-			'metadata' => $this->metadata,
-			'organisation'=> $this->organisation,
-
+			'effect' => $this->effect,
+			'effects' => $this->effects,
+			'requiredSkills' => $this->requiredSkills,
+			'requiredStats' => $this->requiredStats,
+			'requiredConditions' => $this->requiredConditions,
+			'requiredEffects' => $this->requiredEffects,
+			'requiredScore' => $this->requiredScore,
 		];
-
-		$jsonFields = $this->getJsonFields();
-
-		foreach ($array as $key => $value) {
-			if (in_array($key, $jsonFields) === true && $value === null) {
-				$array[$key] = [];
-			}
-		}
-
-		return $array;
 	}
 }

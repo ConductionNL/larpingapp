@@ -4,7 +4,7 @@
   "version": "0.4",
   "title":"Event",
   "type":"object",
-  "description":"An event or special that is part of a setting. This can be iether a full blown week long event or just an Tuesday afternoon gathering. Events are the place where characters come together to have adventures.",
+  "description":"An event or special that is part of a setting. This can be either a full blown week long event or just a Tuesday afternoon gathering. Events are the place where players come together to have adventures.",
   "nameProperties": ["name"],
   "properties":{
     "id":{
@@ -19,26 +19,26 @@
     "description":{
       "type":"string"
     },
-    "characters":{
+    "players":{
       "type":"array",
-      "description":"Characters participating in this event.",
+      "description":"Players participating in this event.",
       "items": {
-        "type:":"object",
-        "$ref": "https://larping.nl/character.schema.json"
+        "type":"string",
+        "format":"uuid"
       }
     },
     "effects":{
       "type":"array",
-      "description":"Any effects that must be aplied to partaking characters afther the event is finished. Commenly used for updating charathers but kan be used for anything.",
+      "description":"Any effects that must be applied to partaking players after the event is finished. Commonly used for updating characters but can be used for anything.",
       "items":{
-        "type:":"object",
-        "$ref": "https://larping.nl/effect.schema.json"
+        "type":"string",
+        "format":"uuid"
       }
     },
     "startDate":{
       "type":"string",
       "format":"date-time",
-      "description":"The moment this event start"
+      "description":"The moment this event starts"
     },
     "endDate":{
       "type":"string",

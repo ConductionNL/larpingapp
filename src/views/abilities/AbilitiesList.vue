@@ -48,9 +48,15 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
 					</template>
 					<template #actions>
 						<NcActionButton @click="abilityStore.setAbilityStoreItem(ability), navigationStore.setModal('editAbility')">
+							<template #icon>
+								<Plus/>
+							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="abilityStore.setAbilityStoreItem(ability), navigationStore.setDialog('deleteAbility')">
+							<template #icon>
+								<TrashCanOutline/>
+							</template>
 							Verwijderen
 						</NcActionButton>
 					</template>
@@ -72,6 +78,10 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
 
 export default {
 	name: 'AbilitiesList',
@@ -86,6 +96,10 @@ export default {
 		// Icons
 		ShieldSwordOutline,
 		Magnify,
+		Plus,
+		Pencil,
+		TrashCanOutline,
+		Refresh,
 	},
 	mounted() {
 		abilityStore.refreshAbilityList()

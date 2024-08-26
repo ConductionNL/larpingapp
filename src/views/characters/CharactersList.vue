@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData()">
+					<NcActionButton @click="characterStore.refreshCharacterList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -50,13 +50,13 @@
 					<template #actions>
 						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setModal('editCharacter')">
 							<template #icon>
-								<Pencil :size="20" />
+								<Pencil />
 							</template>
 							Bewerken
 						</NcActionButton>
 						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setDialog('deleteCharacter')">
 							<template #icon>
-								<TrashCanOutline :size="20" />
+								<TrashCanOutline />
 							</template>
 							Verwijderen
 						</NcActionButton>
@@ -83,6 +83,7 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+
 export default {
 	name: 'CharactersList',
 	components: {

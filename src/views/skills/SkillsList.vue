@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addDocument')">
+					<NcActionButton @click="store.setModal('addSkill')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Bericht toevoegen
+						Vaardigheid toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -37,7 +37,7 @@
 					:active="skillStore.skillItem === skill?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="skillStore.setSkillItem(skill.id)">
+					@click="skillStore.setSkillItem(skill)">
 					<template #icon>
 						<SwordCross :class="skillStore.skillItem === skill.id && 'selectedSkillIcon'"
 							disable-menu
@@ -47,14 +47,17 @@
 						{{ skill?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton>
-							Button one
+						<NcActionButton @click="skillStore.setSkillItem(skill); navigationStore.setModal('editSkill')">
+							<template #icon>
+								<Plus/>
+							</template>
+							Bewerken
 						</NcActionButton>
-						<NcActionButton>
-							Button two
-						</NcActionButton>
-						<NcActionButton>
-							Button three
+						<NcActionButton @click="skillStore.setSkillItem(skill), navigationStore.setDialog('deleteSkill')">
+							<template #icon>
+								<TrashCanOutline/>
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -75,6 +78,10 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import SwordCross from 'vue-material-design-icons/SwordCross.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
 
 export default {
 	name: 'SkillsList',
@@ -89,6 +96,10 @@ export default {
 		// Icons
 		SwordCross,
 		Magnify,
+		Plus,
+		Pencil,
+		TrashCanOutline,
+		Refresh,
 	},
 	mounted() {
 		skillStore.refreshSkillList()

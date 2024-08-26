@@ -5,21 +5,44 @@ import { characterStore, navigationStore } from '../../store/store.js'
 <template>
 	<NcModal v-if="navigationStore.modal === 'editCharacter'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
-			<h2>Taak aanpassen</h2>
+			<h2>Karakter aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
+				<p>Karakter succesvol aangepast</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div v-if="!succes" class="form-group">
-				<NcTextField
-					:disabled="loading"
-					:value.sync="abilityStore.abilityItem.name"
-					label="Naam"
-					maxlength="255" />
-			</div>
+			<form v-if="!succes" @submit.prevent="handleSubmit">
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input v-model="characterStore.characterItem.name" id="name" required>
+				</div>
+				<div class="form-group">
+					<label for="OCName">OC Name:</label>
+					<input v-model="characterStore.characterItem.OCName" id="OCName" required>
+				</div>
+				<div class="form-group">
+					<label for="description">Description:</label>
+					<textarea v-model="characterStore.characterItem.description" id="description"></textarea>
+				</div>
+				<div class="form-group">
+					<label for="type">Type:</label>
+					<select v-model="characterStore.characterItem.type" id="type">
+					<option value="player">Player</option>
+					<option value="npc">NPC</option>
+					<option value="other">Other</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="approved">Approved:</label>
+					<select v-model="characterStore.characterItem.approved" id="approved">
+					<option value="no">No</option>
+					<option value="approved">Approved</option>
+					</select>
+				</div>
+			</form>
+
 
 			<NcButton
 				v-if="!succes"
@@ -44,11 +67,13 @@ import {
 	NcTextArea,
 	NcSelect,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
+
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
-	name: 'WditCharacter',
+	name: 'EditCharacter',
 	components: {
 		NcModal,
 		NcTextField,
@@ -56,6 +81,7 @@ export default {
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 	},
@@ -66,51 +92,23 @@ export default {
 			error: false,
 		}
 	},
-	updated() {
-		if (store.modal === 'editTaak' && this.hasUpdated) {
-			if (this.taak === store.taakItem) return
-			this.hasUpdated = false
-		}
-		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.taak = store.taakItem
-			this.fetchZaken()
-			this.setStatusOptions()
-			this.hasUpdated = true
-		}
-	},
 	methods: {
-		editCharacter() {
+		async editCharacter() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/larpingapp/api/characters/${characterStore.characterItem.id}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(store.taakItem),
-				},
-			)
-				.then((response) => {
-					this.succes = true
-					this.loading = false
-					characterStore.refreshCharacterList()
-					response.json().then((data) => {
-						characterStore.setCharacterItem(data)
-					})
-					// Get the modal to self close
-					const self = this
-					setTimeout(function() {
-						self.succes = false
-						navigationStore.setModal(false)
-					}, 2000)
-				})
-				.catch((err) => {
-					this.loading = false
-					this.error = err
-					console.error(err)
-				})
-		},
+			try {
+				await characterStore.saveCharacter()
+				// Close modal or show success message
+				this.succes = true
+				this.loading = false
+				setTimeout(() => {
+					this.succes = false
+					navigationStore.setModal(false)
+				}, 2000)
+			} catch (error) {
+				this.loading = false
+				this.error = error.message || 'An error occurred while saving the character'
+			}
+		}
 	},
 }
 </script>
