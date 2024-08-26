@@ -1,5 +1,5 @@
 <script setup>
-	import { abilityStore, navigationStore, searchStore } from '../../store/store.js'
+import { abilityStore, navigationStore, searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -16,38 +16,38 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="abilityStore.refreshAbilityList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addRoll')">
+					<NcActionButton @click="navigationStore.setModal('addAbility')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Rol toevoegen
+						Vaardigheid toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="abilityStore.abilityList  && abilityStore.abilityList.length === 0">
+			<div v-if="abilityStore.abilityList  && abilityStore.abilityList.length > 0">
 				<NcListItem v-for="(ability, i) in abilityStore.abilityList"
 					:key="`${ability}${i}`"
 					:name="ability?.name"
 					:active="abilityStore.abilityItem.id === ability?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="abilityStore.setAbilityItem(rollen)">
+					@click="abilityStore.setAbilityItem(ability)">
 					<template #icon>
-						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+						<ShieldSwordOutline :class="abilityStore.abilityItem?.id === ability.id && 'selected'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ rollen?.summary }}
+						{{ ability?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editRol(rol)">
+						<NcActionButton @click="abilityStore.setAbilityStoreItem(ability), navigationStore.setModal('editAbility')">
 							Bewerken
 						</NcActionButton>
 						<NcActionButton>
@@ -62,7 +62,7 @@
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Rollen aan het laden" />
+			name="Vaardigheden aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -71,7 +71,7 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue'
 
 export default {
 	name: 'AbilitiesList',
@@ -84,46 +84,11 @@ export default {
 		NcTextField,
 		NcLoadingIcon,
 		// Icons
-		ChatOutline,
+		ShieldSwordOutline,
 		Magnify,
-	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			rollenList: [],
-		}
 	},
 	mounted() {
 		abilityStore.refreshAbilityList()
-	},
-	methods: {
-		editRol(rol) {
-			abilityStore.setAbilityStoreItem(ab)
-			navigationStore.setModal('editRol')
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/rollen',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rollenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		clearText() {
-			this.search = ''
-		},
 	},
 }
 </script>
@@ -142,7 +107,7 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selected>svg {
     fill: white;
 }
 

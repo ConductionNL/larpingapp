@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="playerStore.refreshPlayerList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -44,7 +44,7 @@
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ player?.summary }}
+						{{ player?.description }}
 					</template>
 					<template #actions>
 						<NcActionButton>

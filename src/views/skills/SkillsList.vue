@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="skillStore.refreshSkillList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -31,20 +31,20 @@
 				</NcActions>
 			</div>
 			<div v-if="skillStore.skillList && skillStore.skillList.length > 0">
-				<NcListItem v-for="(zaken, i) in store.skillsList.results"
-					:key="`${zaken}${i}`"
-					:name="zaken?.name"
-					:active="store.zakenItem === zaken?.id"
+				<NcListItem v-for="(skill, i) in skillStore.skillList"
+					:key="`${skill}${i}`"
+					:name="skill?.name"
+					:active="skillStore.skillItem === skill?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setMetadataItem(zaken.id)">
+					@click="skillStore.setSkillItem(skill.id)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+						<SwordCross :class="skillStore.skillItem === skill.id && 'selectedSkillIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ zaken?.summary }}
+						{{ skill?.description }}
 					</template>
 					<template #actions>
 						<NcActionButton>
@@ -74,7 +74,7 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import SwordCross from 'vue-material-design-icons/SwordCross.vue'
 
 export default {
 	name: 'SkillsList',
@@ -87,42 +87,11 @@ export default {
 		NcTextField,
 		NcLoadingIcon,
 		// Icons
-		BriefcaseAccountOutline,
+		SwordCross,
 		Magnify,
-	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			zakenList: [],
-		}
 	},
 	mounted() {
 		skillStore.refreshSkillList()
-	},
-	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		clearText() {
-			this.search = ''
-		},
 	},
 }
 </script>

@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="store.getBerichtenList()">
+					<NcActionButton @click="itemStore.refreshItemList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -33,19 +33,19 @@
 			<div v-if="itemStore.itemList && itemStore.itemList.length > 0">
 				<NcListItem v-for="(item, i) in itemStore.itemList"
 					:key="`${item}${i}`"
-					:name="item?.summery"
+					:name="item?.name"
 					:active="itemStore.itemItem?.id === item?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
 					@click="itemStore.setItemItem(item)">
 					<template #icon>
-						<ChatOutline :class="itemStore.itemItem?.id === item?.id && 'selectedZaakIcon'"
+						<Sword :class="itemStore.itemItem?.id === item?.id && 'selectedItemIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ bericht?.berichttekst }}
+						{{ item?.description }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="itemStore.setItemItem(bericht); navigationStore.setModal('editBericht')">
@@ -78,7 +78,7 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Sword from 'vue-material-design-icons/Sword.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
@@ -98,24 +98,12 @@ export default {
 		Magnify,
 		Refresh,
 		Plus,
-		ChatOutline,
+		Sword,
 		Pencil,
 		TrashCanOutline,
 	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			berichtenList: [],
-		}
-	},
 	mounted() {
 		itemStore.refreshItemList()
-	},
-	methods: {
-		clearText() {
-			this.search = ''
-		},
 	},
 }
 </script>

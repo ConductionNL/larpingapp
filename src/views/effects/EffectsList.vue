@@ -12,7 +12,7 @@
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@trailing-button-click="searchStore.setSearch('')">
+					@trailing-button-click="effectStore.refreshEffectList()">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
@@ -31,30 +31,30 @@
 				</NcActions>
 			</div>
 			<div v-if="effectStore.effectList && effectStore.effectList.length > 0">
-				<NcListItem v-for="(klant, i) in effectStore.klantenList"
-					:key="`${klant}${i}`"
-					:name="fullName(klant)"
-					:active="store.klantId === klant?.id"
+				<NcListItem v-for="(effect, i) in effectStore.effectList"
+					:key="`${effect}${i}`"
+					:name="effect.name"
+					:active="effectStore.effectItem === effect?.id"
 					:force-display-actions="true"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setKlantItem(klant)">
+					@click="effectStore.setEffectItem(effect)">
 					<template #icon>
-						<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
+						<MagicStaff :class="effectStore.effectItem === effect.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ klant?.subject }}
+						{{ effect?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setKlantItem(klant); store.setModal('editKlant')">
+						<NcActionButton @click="effectStore.setEffectItem(effect); navigationStore.setModal('editEffect')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setKlantItem(klant); store.setDialog('deleteKlant')">
+						<NcActionButton @click="effectStore.setEffectItem(effect); navigationStore.setDialog('deleteEffect')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -63,7 +63,7 @@
 					</template>
 				</NcListItem>
 			</div>
-		</ul>
+		</ul> 
 
 		<NcLoadingIcon v-if="!effectStore.effectList  || effectStore.effectList.length === 0"
 			class="loadingIcon"
@@ -78,7 +78,7 @@ import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIco
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import MagicStaff from 'vue-material-design-icons/MagicStaff.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
@@ -95,28 +95,13 @@ export default {
 		NcTextField,
 		NcLoadingIcon,
 		// Icons
-		AccountOutline,
+		MagicStaff,
 		Magnify,
 		Pencil,
 		TrashCanOutline,
 	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			klantenList: [],
-		}
-	},
 	mounted() {
 		effectStore.refreshEffectList()
-	},
-	methods: {
-		fullName(klant) {
-			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
-		},
-		clearText() {
-			this.search = ''
-		},
 	},
 }
 </script>

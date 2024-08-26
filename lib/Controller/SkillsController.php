@@ -20,13 +20,9 @@ class SkillsController extends Controller
             "name" => "Healing LvL 1",
             "description" => "Healers are what keeps the party going, when someone goes down a healer makes sure they get back up again.",
             "effect" => "Character has access to level 1 healing spells",
-            "effects" => [
-                ["$ref" => "https://larping.nl/effect.schema.json"]
-            ],
+            "effects" => [],
             "requiredSkills" => [],
-            "requiredStats" => [
-                ["$ref" => "https://larping.nl/stat.schema.json"]
-            ],
+            "requiredStats" => [],
             "requiredConditions" => [],
             "requiredEffects" => [],
             "requiredScore" => 10
@@ -36,13 +32,9 @@ class SkillsController extends Controller
             "name" => "Swordsmanship",
             "description" => "Masters of the blade, swordsmen are deadly in close combat and can turn the tide of battle.",
             "effect" => "Character gains +2 to attack rolls with swords",
-            "effects" => [
-                ["$ref" => "https://larping.nl/effect.schema.json"]
-            ],
+            "effects" => [],
             "requiredSkills" => [],
-            "requiredStats" => [
-                ["$ref" => "https://larping.nl/stat.schema.json"]
-            ],
+            "requiredStats" => [],
             "requiredConditions" => [],
             "requiredEffects" => [],
             "requiredScore" => 12
@@ -52,13 +44,9 @@ class SkillsController extends Controller
             "name" => "Arcane Knowledge",
             "description" => "Those versed in arcane knowledge can unravel the mysteries of magic and harness its power.",
             "effect" => "Character can identify magical items and effects",
-            "effects" => [
-                ["$ref" => "https://larping.nl/effect.schema.json"]
-            ],
+            "effects" => [],
             "requiredSkills" => [],
-            "requiredStats" => [
-                ["$ref" => "https://larping.nl/stat.schema.json"]
-            ],
+            "requiredStats" => [],
             "requiredConditions" => [],
             "requiredEffects" => [],
             "requiredScore" => 14
@@ -68,13 +56,9 @@ class SkillsController extends Controller
             "name" => "Stealth",
             "description" => "Masters of stealth can move unseen and unheard, perfect for scouting or ambush.",
             "effect" => "Character gains advantage on stealth checks",
-            "effects" => [
-                ["$ref" => "https://larping.nl/effect.schema.json"]
-            ],
+            "effects" => [],
             "requiredSkills" => [],
-            "requiredStats" => [
-                ["$ref" => "https://larping.nl/stat.schema.json"]
-            ],
+            "requiredStats" => [],
             "requiredConditions" => [],
             "requiredEffects" => [],
             "requiredScore" => 13

@@ -26,16 +26,14 @@ export const useTemplateStore = defineStore(
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}
-				return fetch(
-					endpoint, {
-						method: 'GET',
-					},
-				)
+				return fetch(endpoint, {
+					method: 'GET',
+				})
 					.then(
 						(response) => {
 							response.json().then(
 								(data) => {
-									this.refreshTemplateList(data.results)
+									this.setTemplateList(data.results)
 								},
 							)
 						},

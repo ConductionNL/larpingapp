@@ -2,18 +2,22 @@ import { SafeParseReturnType, z } from 'zod'
 import { TCondition } from './condition.types'
 
 export class Condition implements TCondition {
+	id?: string
+	name: string
+	description?: string
+	effect?: string
+	effects?: string[] // Array of Effect UUIDs
+	unique: boolean
+	characters?: string[] // Array of Character UUIDs
 
-	public id: string
-	public name: string
-
-	constructor(data: TCondition) {
-		this.hydrate(data)
-	}
-
-	/* istanbul ignore next */ // Jest does not recognize the code coverage of these 2 methods
-	private hydrate(data: TCondition) {
-		this.id = data?.id?.toString() || ''
-		this.name = data?.name || ''
+	constructor(condition: TCondition) {
+		this.id = condition.id
+		this.name = condition.name
+		this.description = condition.description
+		this.effect = condition.effect
+		this.effects = condition.effects
+		this.unique = condition.unique ?? false // Set default value to false if not provided
+		this.characters = condition.characters
 	}
 
 	/* istanbul ignore next */
@@ -29,5 +33,4 @@ export class Condition implements TCondition {
 
 		return result
 	}
-
 }

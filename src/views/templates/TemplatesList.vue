@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="templateStore.refreshTemplateList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -98,29 +98,6 @@ export default {
 		templateStore.refreshTemplateList()
 	},
 	methods: {
-		editRol(rol) {
-			templateStore.setTemplateItem(template)
-			navigationStore.setModal('editRol')
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/rollen',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rollenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},

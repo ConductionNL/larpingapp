@@ -5,6 +5,8 @@ export class Ability implements TAbility {
 
 	public id: string
 	public name: string
+	public description?: string
+	public base: number
 
 	constructor(data: TAbility) {
 		this.hydrate(data)
@@ -14,6 +16,8 @@ export class Ability implements TAbility {
 	private hydrate(data: TAbility) {
 		this.id = data?.id?.toString() || ''
 		this.name = data?.name || ''
+		this.description = data?.description
+		this.base = data?.base ?? 0 // Set default value to 0 if not provided
 	}
 
 	/* istanbul ignore next */

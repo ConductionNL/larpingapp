@@ -16,7 +16,7 @@
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="store.getTakenList()">
+					<NcActionButton @click="eventStore.refreshEventList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -33,7 +33,7 @@
 			<div v-if="eventStore.eventList && eventStore.eventList.length > 0">
 				<NcListItem v-for="(event, i) in eventStore.eventList"
 					:key="`${event}${i}`"
-					:name="event?.title"
+					:name="event?.name"
 					:force-display-actions="true"
 					:active="eventStore.eventItem?.id === event?.id"
 					:details="'1h'"
@@ -45,7 +45,7 @@
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ event?.summery }}
+						{{ event?.description }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setModal('editTaak')">
@@ -100,20 +100,8 @@ export default {
 		Pencil,
 		TrashCanOutline,
 	},
-	data() {
-		return {
-			search: '',
-			loading: true,
-			takenList: [],
-		}
-	},
 	mounted() {
 		eventStore.refreshEventList()
-	},
-	methods: {
-		clearText() {
-			this.search = ''
-		},
 	},
 }
 </script>

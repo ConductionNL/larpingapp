@@ -26,16 +26,14 @@ export const usePlayerStore = defineStore(
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}
-				return fetch(
-					endpoint, {
-						method: 'GET',
-					},
-				)
+				return fetch(endpoint, {
+					method: 'GET',
+				})
 					.then(
 						(response) => {
 							response.json().then(
 								(data) => {
-									this.refreshPlayerList(data.results)
+									this.setPlayerList(data.results)
 								},
 							)
 						},

@@ -2,12 +2,16 @@ import { SafeParseReturnType, z } from 'zod'
 import { TTemplate } from './template.types'
 
 export class Template implements TTemplate {
+	id?: string
+	name: string
+	description?: string
+	template?: string
 
-	public id: string
-	public name: string
-
-	constructor(data: TTemplate) {
-		this.hydrate(data)
+	constructor(template: TTemplate) {
+		this.id = template.id
+		this.name = template.name
+		this.description = template.description
+		this.template = template.template
 	}
 
 	/* istanbul ignore next */ // Jest does not recognize the code coverage of these 2 methods

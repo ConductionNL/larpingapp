@@ -17,7 +17,7 @@ export const useEffectStore = defineStore(
 				this.effectList = effectList.map(
 					(effectItem) => new Effect(effectItem),
 				)
-				console.log('Ability list set to ' + effectList.length + ' items')
+				console.log('Effects list set to ' + effectList.length + ' items')
 			},
 			/* istanbul ignore next */ // ignore this for Jest until moved into a service
 			async refreshEffectList(search = null) {
@@ -26,11 +26,9 @@ export const useEffectStore = defineStore(
 				if (search !== null && search !== '') {
 					endpoint = endpoint + '?_search=' + search
 				}
-				return fetch(
-					endpoint, {
-						method: 'GET',
-					},
-				)
+				return fetch(endpoint, {
+					method: 'GET',
+				})
 					.then(
 						(response) => {
 							response.json().then(
