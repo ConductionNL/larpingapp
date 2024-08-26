@@ -1,0 +1,55 @@
+{
+  "$id": "https://larping.nl/event.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "version": "0.4",
+  "title":"Event",
+  "type":"object",
+  "description":"An event or special that is part of a setting. This can be iether a full blown week long event or just an Tuesday afternoon gathering. Events are the place where characters come together to have adventures.",
+  "nameProperties": ["name"],
+  "properties":{
+    "id":{
+      "type":"string",
+      "format":"uuid",
+      "example":"56cf6db0-7c37-41a5-968b-d322c3f0da28",
+      "readOnly":true
+    },
+    "name":{
+      "type":"string"
+    },
+    "description":{
+      "type":"string"
+    },
+    "characters":{
+      "type":"array",
+      "description":"Characters participating in this event.",
+      "items": {
+        "type:":"object",
+        "$ref": "https://larping.nl/character.schema.json"
+      }
+    },
+    "effects":{
+      "type":"array",
+      "description":"Any effects that must be aplied to partaking characters afther the event is finished. Commenly used for updating charathers but kan be used for anything.",
+      "items":{
+        "type:":"object",
+        "$ref": "https://larping.nl/effect.schema.json"
+      }
+    },
+    "startDate":{
+      "type":"string",
+      "format":"date-time",
+      "description":"The moment this event start"
+    },
+    "endDate":{
+      "type":"string",
+      "format":"date-time",
+      "description":"The moment this event ends"
+    },
+    "location":{
+      "type":"string"
+    }
+  },
+  "required":[
+    "name"
+  ]
+}
