@@ -21,25 +21,31 @@
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addDocument')">
+						<NcActionButton @click="navigationStore.setModal('addSkillToCharacter')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
 							Vaardigheid toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addRoll')">
+						<NcActionButton @click="navigationStore.setModal('addItemToCharacter')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
 							Item toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addConditionToCharacter')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
 							Conditie toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addEventToCharacter')">
+							<template #icon>
+								<CalendarPlus :size="20" />
+							</template>
+							Event toevoegen
+						</NcActionButton>
+						<NcActionButton @click="navigationStore.setModal('downloadPdfFromCharacter')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
