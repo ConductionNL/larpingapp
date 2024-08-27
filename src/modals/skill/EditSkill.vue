@@ -90,6 +90,7 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
+				
 				this.error = error.message || 'An error occurred while saving the skill'
 			}
 		},

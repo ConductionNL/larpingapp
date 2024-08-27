@@ -3,92 +3,113 @@ import { effectStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'editEffect'" ref="modalRef" @close="navigationStore.setModal(false)">
-		<div class="modalContent">
-			<h2>Vaardigheid {{ effectStore.effectItem.id ? 'Aanpassen' : 'Aanmaken' }}</h2>
-			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
-			</NcNoteCard>
-			<NcNoteCard v-if="error" type="error">
-				<p>{{ error }}</p>
-			</NcNoteCard>
+    <NcDialog v-if="navigationStore.modal === 'editEffect'"
+        name="Effect"
+        size="normal"
+        :can-close="false">
 
-			<form v-if="!succes" @submit.prevent="handleSubmit">
-				<div class="form-group">
-					<label for="name">Name:</label>
-					<input v-model="effectStore.effectItem.name" id="name" required>
-				</div>
-				<div class="form-group">
-					<label for="description">Description:</label>
-					<textarea v-model="effectStore.effectItem.description" id="description"></textarea>
-				</div>
-			</form>
+        <NcNoteCard v-if="success" type="success">
+            <p>Effect succesvol aangepast</p>
+        </NcNoteCard>
+        <NcNoteCard v-if="error" type="error">
+            <p>{{ error }}</p>
+        </NcNoteCard>
 
-			<NcButton
-				v-if="!succes"
-				:disabled="loading"
-				type="primary"
-				@click="editEffect()">
-				<template #icon>
-					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
-				</template>
-				Opslaan
-			</NcButton>
-		</div>
-	</NcModal>
+        <div v-if="!success" class="formContainer">
+            <NcTextField :disabled="loading"
+                label="Name *"
+                required
+                :value.sync="effectStore.effectItem.name" />
+            <NcTextArea :disabled="loading"
+                label="Description"
+                type="textarea"
+                :value.sync="effectStore.effectItem.description" />
+            <NcTextField :disabled="loading"
+                label="Stat ID"
+                :value.sync="effectStore.effectItem.statId" />
+            <NcTextField :disabled="loading"
+                label="Modifier"
+                type="number"
+                :value.sync="effectStore.effectItem.modifier" />
+            <NcSelect :disabled="loading"
+                label="Modification"
+                :options="[
+                    { label: 'Positive', value: 'positive' },
+                    { label: 'Negative', value: 'negative' }
+                ]"
+                :value.sync="effectStore.effectItem.modification" />
+            <NcSelect :disabled="loading"
+                label="Cumulative"
+                :options="[
+                    { label: 'Cumulative', value: 'cumulative' },
+                    { label: 'Non-cumulative', value: 'non-cumulative' }
+                ]"
+                :value.sync="effectStore.effectItem.cumulative" />
+        </div>
+
+        <template #actions>
+            <NcButton @click="navigationStore.setModal(false)">
+                <template #icon><Cancel :size="20" /></template>
+                {{ success ? 'Sluiten' : 'Annuleer' }}
+            </NcButton>
+            <NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+                <template #icon><Help :size="20" /></template>
+                Help
+            </NcButton>
+            <NcButton v-if="!success" :disabled="loading" type="primary" @click="editEffect()">
+                <template #icon>
+                    <NcLoadingIcon v-if="loading" :size="20" />
+                    <ContentSaveOutline v-if="!loading && effectStore.effectItem.id" :size="20" />
+                    <Plus v-if="!loading && !effectStore.effectItem.id" :size="20" />
+                </template>
+                {{ effectStore.effectItem.id ? 'Opslaan' : 'Aanmaken' }}
+            </NcButton>
+        </template>
+    </NcDialog>
 </template>
 
 <script>
 import {
-	NcButton,
-	NcModal,
-	NcTextField,
-	NcTextArea,
-	NcSelect,
-	NcLoadingIcon,
-	NcNoteCard,
+    NcButton, NcDialog, NcTextField, NcTextArea, NcSelect, NcLoadingIcon, NcNoteCard
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
-	name: 'EditEffect',
-	components: {
-		NcModal,
-		NcTextField,
-		NcTextArea,
-		NcButton,
-		NcSelect,
-		NcLoadingIcon,
-		NcNoteCard,
-		// Icons
-		ContentSaveOutline,
-	},
-	data() {
-		return {
-			succes: false,
-			loading: false,
-			error: false,
-		}
-	},
-	methods: {
-		async editEffect() {
-			this.loading = true
-			try {
-				await effectStore.saveEffect()
-				// Close modal or show success message
-				this.succes = true
-				this.loading = false
-				setTimeout(function() {
-					this.succes = false
-					navigationStore.setModal(false)
-				}, 2000)
-			} catch (error) {
-				this.loading = false
-				this.succes = false
-				this.error = error.message || 'An error occurred while saving the character'
-			}
-		}
-	},
+    name: 'EditEffect',
+    components: {
+        NcDialog, NcTextField, NcTextArea, NcButton, NcSelect, NcLoadingIcon, NcNoteCard,
+        ContentSaveOutline, Cancel, Plus, Help,
+    },
+    data() {
+        return {
+            success: false,
+            loading: false,
+            error: false,
+        }
+    },
+    methods: {
+        async editEffect() {
+            this.loading = true
+            try {
+                await effectStore.saveEffect()
+                this.success = true
+                this.loading = false
+                setTimeout(() => {
+                    this.success = false
+                    navigationStore.setModal(false)
+                }, 2000)
+            } catch (error) {
+                this.loading = false
+                this.success = false
+                this.error = error.message || 'An error occurred while saving the effect'
+            }
+        },
+        openLink(url, target) {
+            window.open(url, target)
+        }
+    },
 }
 </script>
