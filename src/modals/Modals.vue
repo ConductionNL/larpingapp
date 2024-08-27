@@ -3,6 +3,7 @@
 	<div>
 		<EditAbility />
 		<EditCharacter />
+		<DeleteCharacter />
 		<EditCondition />
 		<EditEffect />
 		<EditEvent />
@@ -16,6 +17,7 @@
 <script>
 import EditAbility from './ability/EditAbility.vue'
 import EditCharacter from './character/EditCharacter.vue'
+import DeleteCharacter from './character/DeleteCharacter.vue'
 import EditCondition from './condition/EditCondition.vue'
 import EditEffect from './effect/EditEffect.vue'
 import EditEvent from './event/EditEvent.vue'
@@ -29,6 +31,7 @@ export default {
 	components: {
 		EditAbility,
 		EditCharacter,
+		DeleteCharacter,
 		EditCondition,
 		EditEffect,
 		EditEvent,

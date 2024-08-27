@@ -15,7 +15,7 @@
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('editCharacter')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -45,9 +45,9 @@
 							</template>
 							Als pdf downloaden
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setDialog('deleteCharacter')">
 							<template #icon>
-								<Pencil :size="20" />
+								<TrashCanOutline :size="20" />
 							</template>
 							Verwijderen
 						</NcActionButton>
@@ -95,7 +95,8 @@ import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
 import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
 import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
 import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
-import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
+import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue' 
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue' 
 
 export default {
 	name: 'CharacterDetails',
@@ -113,6 +114,7 @@ export default {
 		CalendarPlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
+		TrashCanOutline,
 
 	},
 }
