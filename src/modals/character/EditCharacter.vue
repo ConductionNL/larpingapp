@@ -3,66 +3,69 @@ import { characterStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'editCharacter'" ref="modalRef" @close="navigationStore.setModal(false)">
-		<div class="modalContent">
-			<h2>Karakter aanpassen</h2>
-			<NcNoteCard v-if="succes" type="success">
-				<p>Karakter succesvol aangepast</p>
-			</NcNoteCard>
-			<NcNoteCard v-if="error" type="error">
-				<p>{{ error }}</p>
-			</NcNoteCard>
+	<NcDialog v-if="navigationStore.modal === 'editCharacter'"
+		name="Karakter"
+		size="normal"
+		:can-close="false">
 
-			<form v-if="!succes" @submit.prevent="handleSubmit">
-				<div class="form-group">
-					<label for="name">Name:</label>
-					<input v-model="characterStore.characterItem.name" id="name" required>
-				</div>
-				<div class="form-group">
-					<label for="OCName">OC Name:</label>
-					<input v-model="characterStore.characterItem.OCName" id="OCName" required>
-				</div>
-				<div class="form-group">
-					<label for="description">Description:</label>
-					<textarea v-model="characterStore.characterItem.description" id="description"></textarea>
-				</div>
-				<div class="form-group">
-					<label for="type">Type:</label>
-					<select v-model="characterStore.characterItem.type" id="type">
-					<option value="player">Player</option>
-					<option value="npc">NPC</option>
-					<option value="other">Other</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="approved">Approved:</label>
-					<select v-model="characterStore.characterItem.approved" id="approved">
-					<option value="no">No</option>
-					<option value="approved">Approved</option>
-					</select>
-				</div>
-			</form>
+		<NcNoteCard v-if="success" type="success">
+			<p>Karakter succesvol aangepast</p>
+		</NcNoteCard>
+		<NcNoteCard v-if="error" type="error">
+			<p>{{ error }}</p>
+		</NcNoteCard>
+	
+		<div v-if="!success" class="formContainer">
+			<NcTextField :disabled="loading"
+					label="Name *"
+					required
+					:value.sync="characterStore.characterItem.name" />
+			<NcTextField :disabled="loading"
+					label="OC Name *"
+					required
+					:value.sync="characterStore.characterItem.OCName" />
+			<NcTextArea :disabled="loading"
+					label="Description"
+					type="textarea"
+					:value.sync="characterStore.characterItem.description" />
+		</div>
 
-
+		<template #actions>
 			<NcButton
-				v-if="!succes"
+				@click="navigationStore.setModal(false)">
+				<template #icon>
+					<Cancel :size="20" />
+				</template>
+				{{ success ? 'Sluiten' : 'Annuleer' }}
+			</NcButton>
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+				<template #icon>
+					<Help :size="20" />
+				</template>
+				Help
+			</NcButton>
+			<NcButton
+				v-if="!success"
 				:disabled="loading"
 				type="primary"
 				@click="editCharacter()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<ContentSaveOutline v-if="!loading && characterStore.characterItem.id" :size="20" />
+					<Plus v-if="!loading && !characterStore.characterItem.id" :size="20" />
 				</template>
-				Opslaan
+				{{ characterStore.characterItem.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
-		</div>
-	</NcModal>
+		</template>
+	</NcDialog>
+	
 </template>
 
 <script>
 import {
 	NcButton,
-	NcModal,
+	NcDialog,
 	NcTextField,
 	NcTextArea,
 	NcSelect,
@@ -70,12 +73,15 @@ import {
 	NcNoteCard,
 } from '@nextcloud/vue'
 
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue' 
+import Cancel from 'vue-material-design-icons/Cancel.vue' 
+import Plus from 'vue-material-design-icons/Plus.vue' 
+import Help from 'vue-material-design-icons/Help.vue' 
 
 export default {
 	name: 'EditCharacter',
 	components: {
-		NcModal,
+		NcDialog,
 		NcTextField,
 		NcTextArea,
 		NcButton,
@@ -84,10 +90,13 @@ export default {
 		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
+		Cancel,
+		Plus,
+		Help,
 	},
 	data() {
 		return {
-			succes: false,
+			success: false,
 			loading: false,
 			error: false,
 		}
@@ -98,14 +107,16 @@ export default {
 			try {
 				await characterStore.saveCharacter()
 				// Close modal or show success message
-				this.succes = true
+				this.success = true
 				this.loading = false
+				this.error = false
 				setTimeout(() => {
-					this.succes = false
+					this.success = false
 					navigationStore.setModal(false)
 				}, 2000)
 			} catch (error) {
 				this.loading = false
+				this.success = false
 				this.error = error.message || 'An error occurred while saving the character'
 			}
 		}

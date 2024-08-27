@@ -16,7 +16,7 @@
 					<AccountGroupOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('addPlayer')">
+					<NcButton type="primary" @click="playerStore.setPlayerItem([]); navigationStore.setModal('editPlayer')">
 						Speler aanmaken
 					</NcButton>
 				</template>

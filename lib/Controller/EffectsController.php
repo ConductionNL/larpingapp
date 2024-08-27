@@ -4,8 +4,10 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Effect;
-use OCA\OpenCatalogi\Db\EffectMapper;
+use OCA\LarpingApp\Service\ObjectService;
+use OCA\LarpingApp\Service\SearchService;
+use OCA\LarpingApp\Db\Effect;
+use OCA\LarpingApp\Db\EffectMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -56,7 +58,8 @@ class EffectsController extends Controller
     public function __construct(
 		$appName,
 		IRequest $request,
-		private readonly IAppConfig $config
+		private readonly IAppConfig $config,
+		private readonly EffectMapper $effectMapper
 	)
     {
         parent::__construct($appName, $request);
@@ -83,72 +86,112 @@ class EffectsController extends Controller
 	
 
     /**
-     * Return (and serach) all objects
+     * Retrieves a list of all effects
      * 
+     * This method returns a JSON response containing an array of all effects in the system.
+     * It uses filters and search parameters to refine the results.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse A JSON response containing the list of effects
      */
-    public function index(): JSONResponse
+    public function index(ObjectService $objectService, SearchService $searchService): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        $filters = $this->request->getParams();
+        $fieldsToSearch = ['name', 'description'];
+
+        $searchParams = $searchService->createMySQLSearchParams(filters: $filters);
+        $searchConditions = $searchService->createMySQLSearchConditions(filters: $filters, fieldsToSearch: $fieldsToSearch);
+        $filters = $searchService->unsetSpecialQueryParams(filters: $filters);
+
+        return new JSONResponse(['results' => $this->effectMapper->findAll(limit: null, offset: null, filters: $filters, searchConditions: $searchConditions, searchParams: $searchParams)]);
     }
 
     /**
-     * Read a single object
+     * Retrieves a single effect by its ID
      * 
+     * This method returns a JSON response containing the details of a specific effect.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param string $id The ID of the effect to retrieve
+     * @return JSONResponse A JSON response containing the effect details
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        try {
+            return new JSONResponse($this->effectMapper->find(id: (int) $id));
+        } catch (DoesNotExistException $exception) {
+            return new JSONResponse(data: ['error' => 'Not Found'], statusCode: 404);
+        }
     }
 
-
     /**
-     * Creatue an object
+     * Creates a new effect
      * 
+     * This method creates a new effect based on POST data.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse A JSON response containing the created effect
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        
+        return new JSONResponse($this->effectMapper->createFromArray(object: $data));
     }
 
     /**
-     * Update an object
+     * Updates an existing effect
      * 
+     * This method updates an existing effect based on its ID and the provided data.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param int $id The ID of the effect to update
+     * @return JSONResponse A JSON response containing the updated effect details
      */
-    public function update(string $id): JSONResponse
+    public function update(int $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        if (isset($data['id'])) {
+            unset($data['id']);
+        }
+        return new JSONResponse($this->effectMapper->updateFromArray(id: (int) $id, object: $data));
     }
 
     /**
-     * Delate an object
+     * Deletes an effect
      * 
+     * This method deletes an effect based on its ID.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param int $id The ID of the effect to delete
+     * @return JSONResponse An empty JSON response
      */
-    public function destroy(string $id): JSONResponse
+    public function destroy(int $id): JSONResponse
     {
+        $this->effectMapper->delete($this->effectMapper->find((int) $id));
+
         return new JSONResponse([]);
     }
 }

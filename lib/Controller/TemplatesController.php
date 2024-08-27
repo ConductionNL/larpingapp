@@ -4,8 +4,10 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Template;
-use OCA\OpenCatalogi\Db\TemplateMapper;
+use OCA\LarpingApp\Service\ObjectService;
+use OCA\LarpingApp\Service\SearchService;
+use OCA\LarpingApp\Db\Template;
+use OCA\LarpingApp\Db\TemplateMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -44,7 +46,8 @@ class TemplatesController extends Controller
     public function __construct(
 		$appName,
 		IRequest $request,
-		private readonly IAppConfig $config
+		private readonly IAppConfig $config,
+		private readonly TemplateMapper $templateMapper
 	)
     {
         parent::__construct($appName, $request);
@@ -71,72 +74,112 @@ class TemplatesController extends Controller
 	
 
     /**
-     * Return (and serach) all objects
+     * Retrieves a list of all templates
      * 
+     * This method returns a JSON response containing an array of all templates in the system.
+     * It uses filters and search parameters to refine the results.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse A JSON response containing the list of templates
      */
-    public function index(): JSONResponse
+    public function index(ObjectService $objectService, SearchService $searchService): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        $filters = $this->request->getParams();
+        $fieldsToSearch = ['name', 'description'];
+
+        $searchParams = $searchService->createMySQLSearchParams(filters: $filters);
+        $searchConditions = $searchService->createMySQLSearchConditions(filters: $filters, fieldsToSearch: $fieldsToSearch);
+        $filters = $searchService->unsetSpecialQueryParams(filters: $filters);
+
+        return new JSONResponse(['results' => $this->templateMapper->findAll(limit: null, offset: null, filters: $filters, searchConditions: $searchConditions, searchParams: $searchParams)]);
     }
 
     /**
-     * Read a single object
+     * Retrieves a single template by its ID
      * 
+     * This method returns a JSON response containing the details of a specific template.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param string $id The ID of the template to retrieve
+     * @return JSONResponse A JSON response containing the template details
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        try {
+            return new JSONResponse($this->templateMapper->find(id: (int) $id));
+        } catch (DoesNotExistException $exception) {
+            return new JSONResponse(data: ['error' => 'Not Found'], statusCode: 404);
+        }
     }
 
-
     /**
-     * Creatue an object
+     * Creates a new template
      * 
+     * This method creates a new template based on POST data.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse A JSON response containing the created template
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        
+        return new JSONResponse($this->templateMapper->createFromArray(object: $data));
     }
 
     /**
-     * Update an object
+     * Updates an existing template
      * 
+     * This method updates an existing template based on its ID and the provided data.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param int $id The ID of the template to update
+     * @return JSONResponse A JSON response containing the updated template details
      */
-    public function update(string $id): JSONResponse
+    public function update(int $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        if (isset($data['id'])) {
+            unset($data['id']);
+        }
+        return new JSONResponse($this->templateMapper->updateFromArray(id: (int) $id, object: $data));
     }
 
     /**
-     * Delate an object
+     * Deletes a template
      * 
+     * This method deletes a template based on its ID.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @param int $id The ID of the template to delete
+     * @return JSONResponse An empty JSON response
      */
-    public function destroy(string $id): JSONResponse
+    public function destroy(int $id): JSONResponse
     {
+        $this->templateMapper->delete($this->templateMapper->find((int) $id));
+
         return new JSONResponse([]);
     }
 }

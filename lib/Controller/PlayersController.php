@@ -4,8 +4,10 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Player;
-use OCA\OpenCatalogi\Db\PlayerMapper;
+use OCA\LarpingApp\Service\ObjectService;
+use OCA\LarpingApp\Service\SearchService;
+use OCA\LarpingApp\Db\Player;
+use OCA\LarpingApp\Db\PlayerMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -47,7 +49,8 @@ class PlayersController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly IAppConfig $config,
+		private readonly PlayerMapper $playerMapper
     )
     {
         parent::__construct($appName, $request);
@@ -76,24 +79,28 @@ class PlayersController extends Controller
      * Retrieves a list of all players
      * 
      * This method returns a JSON response containing an array of all players in the system.
-     * Currently, it uses a test array instead of fetching from a database.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse A JSON response containing the list of players
      */
-    public function index(): JSONResponse
+    public function index(ObjectService $objectService, SearchService $searchService): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        $filters = $this->request->getParams();
+        $fieldsToSearch = ['name', 'description'];
+
+        $searchParams = $searchService->createMySQLSearchParams(filters: $filters);
+        $searchConditions = $searchService->createMySQLSearchConditions(filters: $filters, fieldsToSearch: $fieldsToSearch);
+        $filters = $searchService->unsetSpecialQueryParams(filters: $filters);
+
+        return new JSONResponse(['results' => $this->playerMapper->findAll(limit: null, offset: null, filters: $filters, searchConditions: $searchConditions, searchParams: $searchParams)]);
     }
 
     /**
      * Retrieves a single player by their ID
      * 
      * This method returns a JSON response containing the details of a specific player.
-     * Currently, it fetches the player from a test array instead of a database.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -103,59 +110,77 @@ class PlayersController extends Controller
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        try {
+            return new JSONResponse($this->playerMapper->find(id: (int) $id));
+        } catch (DoesNotExistException $exception) {
+            return new JSONResponse(data: ['error' => 'Not Found'], statusCode: 404);
+        }
     }
 
     /**
      * Creates a new player
      * 
-     * This method is intended to create a new player based on POST data.
-     * Currently, it returns an empty JSON response as a placeholder.
+     * This method creates a new player based on POST data.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
-     * @return JSONResponse An empty JSON response (placeholder)
+     * @return JSONResponse A JSON response containing the created player details
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        
+        return new JSONResponse($this->playerMapper->createFromArray(object: $data));
     }
 
     /**
      * Updates an existing player
      * 
-     * This method is intended to update an existing player based on their ID.
-     * Currently, it returns the player from the test array without actually updating it.
+     * This method updates an existing player based on their ID.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
-     * @param string $id The ID of the player to update
-     * @return JSONResponse A JSON response containing the (unchanged) player details
+     * @param int $id The ID of the player to update
+     * @return JSONResponse A JSON response containing the updated player details
      */
-    public function update(string $id): JSONResponse
+    public function update(int $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        if (isset($data['id'])) {
+            unset($data['id']);
+        }
+        return new JSONResponse($this->playerMapper->updateFromArray(id: (int) $id, object: $data));
     }
 
     /**
      * Deletes a player
      * 
-     * This method is intended to delete a player based on their ID.
-     * Currently, it returns an empty JSON response as a placeholder.
+     * This method deletes a player based on their ID.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
-     * @param string $id The ID of the player to delete
-     * @return JSONResponse An empty JSON response (placeholder)
+     * @param int $id The ID of the player to delete
+     * @return JSONResponse An empty JSON response
      */
-    public function destroy(string $id): JSONResponse
+    public function destroy(int $id): JSONResponse
     {
+        $this->playerMapper->delete($this->playerMapper->find((int) $id));
+
         return new JSONResponse([]);
     }
 }

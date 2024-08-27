@@ -92,7 +92,15 @@ export const useCharacterStore = defineStore(
 				const endpoint = isNewCharacter
 					? '/index.php/apps/larpingapp/api/characters'
 					: `/index.php/apps/larpingapp/api/characters/${this.characterItem.id}`
-				const method = isNewCharacter ? 'POST' : 'PUT'				
+				const method = isNewCharacter ? 'POST' : 'PUT'
+
+				// Create a copy of the character item and remove empty properties
+				const characterToSave = { ...this.characterItem }
+				Object.keys(characterToSave).forEach(key => {
+					if (characterToSave[key] === '' || (Array.isArray(characterToSave[key]) && characterToSave[key].length === 0)) {
+						delete characterToSave[key]
+					}
+				})
 
 				return fetch(
 					endpoint,
@@ -101,7 +109,7 @@ export const useCharacterStore = defineStore(
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify(this.characterItem),
+						body: JSON.stringify(characterToSave),
 					},
 				)
 					.then((response) => response.json())

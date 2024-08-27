@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addPlayer')">
+					<NcActionButton @click="playerStore.setPlayerItem([]); navigationStore.setModal('editPlayer')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

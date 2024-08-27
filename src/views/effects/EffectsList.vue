@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addEffect')">
+					<NcActionButton @click="effectStore.setEffectItem([]); navigationStore.setModal('editEffect')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

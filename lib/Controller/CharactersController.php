@@ -4,8 +4,10 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Character;
-use OCA\OpenCatalogi\Db\CharacterMapper;
+use OCA\LarpingApp\Service\ObjectService;
+use OCA\LarpingApp\Service\SearchService;
+use OCA\LarpingApp\Db\Character;
+use OCA\LarpingApp\Db\CharacterMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -115,7 +117,8 @@ class CharactersController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly IAppConfig $config,
+		private readonly CharacterMapper $characterMapper
     )
     {
         parent::__construct($appName, $request);
@@ -151,10 +154,17 @@ class CharactersController extends Controller
      *
      * @return JSONResponse A JSON response containing the list of characters
      */
-    public function index(): JSONResponse
+    public function index(ObjectService $objectService, SearchService $searchService): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        $filters = $this->request->getParams();
+        $fieldsToSearch = ['name', 'description'];
+
+        $searchParams = $searchService->createMySQLSearchParams(filters: $filters);
+        $searchConditions = $searchService->createMySQLSearchConditions(filters: $filters, fieldsToSearch:  $fieldsToSearch);
+        $filters = $searchService->unsetSpecialQueryParams(filters: $filters);
+
+        return new JSONResponse(['results' => $this->characterMapper->findAll(limit: null, offset: null, filters: $filters, searchConditions: $searchConditions, searchParams: $searchParams)]);
+
     }
 
     /**
@@ -171,8 +181,11 @@ class CharactersController extends Controller
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        try {
+            return new JSONResponse($this->characterMapper->find(id: (int) $id));
+        } catch (DoesNotExistException $exception) {
+            return new JSONResponse(data: ['error' => 'Not Found'], statusCode: 404);
+        }
     }
 
     /**
@@ -188,8 +201,15 @@ class CharactersController extends Controller
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        $data = $this->request->getParams();
+
+		foreach ($data as $key => $value) {
+			if (str_starts_with($key, '_')) {
+				unset($data[$key]);
+			}
+		}
+        
+        return new JSONResponse($this->characterMapper->createFromArray(object: $data));
     }
 
     /**
@@ -204,10 +224,18 @@ class CharactersController extends Controller
      * @param string $id The ID of the character to update
      * @return JSONResponse A JSON response containing the (unchanged) character details
      */
-    public function update(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+    public function update(int $id): JSONResponse
+    {$data = $this->request->getParams();
+
+		foreach ($data as $key => $value) {
+			if (str_starts_with($key, '_')) {
+				unset($data[$key]);
+			}
+		}
+		if (isset($data['id'])) {
+			unset($data['id']);
+		}
+        return new JSONResponse($this->characterMapper->updateFromArray(id: (int) $id, object: $data));
     }
 
     /**
@@ -222,8 +250,10 @@ class CharactersController extends Controller
      * @param string $id The ID of the character to delete
      * @return JSONResponse An empty JSON response (placeholder)
      */
-    public function destroy(string $id): JSONResponse
+    public function destroy(int $id): JSONResponse
     {
+        $this->characterMapper->delete($this->characterMapper->find((int) $id));
+
         return new JSONResponse([]);
     }
 }

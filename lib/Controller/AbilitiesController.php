@@ -4,8 +4,10 @@ namespace OCA\LarpingApp\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use OCA\opencatalogi\lib\Db\Ability;
-use OCA\OpenCatalogi\Db\AbilityMapper;
+use OCA\LarpingApp\Service\ObjectService;
+use OCA\LarpingApp\Service\SearchService;
+use OCA\LarpingApp\Db\Ability;
+use OCA\LarpingApp\Db\AbilityMapper;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -44,7 +46,8 @@ class AbilitiesController extends Controller
     public function __construct(
 		$appName,
 		IRequest $request,
-		private readonly IAppConfig $config
+		private readonly IAppConfig $config,
+		private readonly AbilityMapper $abilityMapper
 	)
     {
         parent::__construct($appName, $request);
@@ -75,87 +78,109 @@ class AbilitiesController extends Controller
      * Retrieves a list of all abilities
      * 
      * This method returns a JSON response containing an array of all abilities in the system.
-     * Currently, it uses a test array instead of fetching from a database.
+     * It uses filters and search parameters to refine the results.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse A JSON response containing the list of abilities
+     *
+     * @return JSONResponse A JSON response containing the list of abilities
      */
-    public function index(): JSONResponse
+    public function index(ObjectService $objectService, SearchService $searchService): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        $filters = $this->request->getParams();
+        $fieldsToSearch = ['name', 'description'];
+
+        $searchParams = $searchService->createMySQLSearchParams(filters: $filters);
+        $searchConditions = $searchService->createMySQLSearchConditions(filters: $filters, fieldsToSearch: $fieldsToSearch);
+        $filters = $searchService->unsetSpecialQueryParams(filters: $filters);
+
+        return new JSONResponse(['results' => $this->abilityMapper->findAll(limit: null, offset: null, filters: $filters, searchConditions: $searchConditions, searchParams: $searchParams)]);
     }
 
     /**
      * Retrieves a single ability by its ID
      * 
      * This method returns a JSON response containing the details of a specific ability.
-     * Currently, it fetches the ability from a test array instead of a database.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @param string $id The ID of the ability to retrieve
-	 * @return JSONResponse A JSON response containing the ability details
+     *
+     * @param string $id The ID of the ability to retrieve
+     * @return JSONResponse A JSON response containing the ability details
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        try {
+            return new JSONResponse($this->abilityMapper->find(id: (int) $id));
+        } catch (DoesNotExistException $exception) {
+            return new JSONResponse(data: ['error' => 'Not Found'], statusCode: 404);
+        }
     }
-
 
     /**
      * Creates a new ability
      * 
-     * This method is intended to create a new ability based on POST data.
-     * Currently, it returns an empty JSON response as a placeholder.
+     * This method creates a new ability based on POST data.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse An empty JSON response (placeholder)
+     *
+     * @return JSONResponse A JSON response containing the created ability
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        
+        return new JSONResponse($this->abilityMapper->createFromArray(object: $data));
     }
 
     /**
      * Updates an existing ability
      * 
-     * This method is intended to update an existing ability based on its ID.
-     * Currently, it returns the ability from the test array without actually updating it.
+     * This method updates an existing ability based on its ID and the provided data.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @param string $id The ID of the ability to update
-	 * @return JSONResponse A JSON response containing the (unchanged) ability details
+     *
+     * @param int $id The ID of the ability to update
+     * @return JSONResponse A JSON response containing the updated ability details
      */
-    public function update(string $id): JSONResponse
+    public function update(int $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        $data = $this->request->getParams();
+
+        foreach ($data as $key => $value) {
+            if (str_starts_with($key, '_')) {
+                unset($data[$key]);
+            }
+        }
+        if (isset($data['id'])) {
+            unset($data['id']);
+        }
+        return new JSONResponse($this->abilityMapper->updateFromArray(id: (int) $id, object: $data));
     }
 
     /**
      * Deletes an ability
      * 
-     * This method is intended to delete an ability based on its ID.
-     * Currently, it returns an empty JSON response as a placeholder.
+     * This method deletes an ability based on its ID.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @param string $id The ID of the ability to delete
-	 * @return JSONResponse An empty JSON response (placeholder)
+     *
+     * @param int $id The ID of the ability to delete
+     * @return JSONResponse An empty JSON response
      */
-    public function destroy(string $id): JSONResponse
+    public function destroy(int $id): JSONResponse
     {
+        $this->abilityMapper->delete($this->abilityMapper->find((int) $id));
+
         return new JSONResponse([]);
     }
 }

@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addCharacter')">
+					<NcActionButton @click="characterStore.setCharacterItem([]); navigationStore.setModal('editCharacter')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

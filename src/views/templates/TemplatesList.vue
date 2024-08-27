@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addTemplate')">
+					<NcActionButton @click="templateStore.setTemplateItem([]); navigationStore.setModal('editTemplate')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -31,29 +31,29 @@
 				</NcActions>
 			</div>
 			<div v-if="templateStore.templateList && templateStore.templateList.length > 0">
-				<NcListItem v-for="(rollen, i) in store.templateList.results"
-					:key="`${rollen}${i}`"
-					:name="rollen?.name"
-					:active="store.rolId === rollen?.id"
+				<NcListItem v-for="(template, i) in templateStore.templateList"
+					:key="`${template}${i}`"
+					:name="template?.name"
+					:active="templateStore.templateItem?.id === template?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="templateStore.setTemplateItem(rollen)">
+					@click="templateStore.setTemplateItem(template)">
 					<template #icon>
-						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+						<ChatOutline :class="templateStore.templateItem?.id  === template.id && 'selected'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ rollen?.summary }}
+						{{ template?.description }}
 					</template>
 					<template #actions>						
-						<NcActionButton @click="templateStore.setTemlateItem(template); navigationStore.setModal('editTemlate')">
+						<NcActionButton @click="templateStore.setTemplateItem(template); navigationStore.setModal('editTemplate')">
 							<template #icon>
 								<Plus/>
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="templateStore.setTemlateItem(template), navigationStore.setDialog('deleteTemplate')">
+						<NcActionButton @click="templateStore.setTemplateItem(template), navigationStore.setDialog('deleteTemplate')">
 							<template #icon>
 								<TrashCanOutline/>
 							</template>
@@ -133,7 +133,7 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selected>svg {
     fill: white;
 }
 

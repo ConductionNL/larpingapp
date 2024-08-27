@@ -1,6 +1,9 @@
 # Styleguide
 The style guide provides a general overview on styling decisions made during the development of the application.
 
+## Making migrations
+sudo -u www-data php occ migrations:generate larpingapp 0
+
 ## Icon Usage
 We use [material design icons](https://pictogrammers.com/library/mdi/) in line with:
 

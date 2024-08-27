@@ -22,7 +22,7 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addAbility')">
+					<NcActionButton @click="abilityStore.setAbilityItem([]), navigationStore.setModal('editAbility')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -47,13 +47,13 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
 						{{ ability?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="abilityStore.setAbilityStoreItem(ability), navigationStore.setModal('editAbility')">
+						<NcActionButton @click="abilityStore.setAbilityItem(ability), navigationStore.setModal('editAbility')">
 							<template #icon>
 								<Plus/>
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="abilityStore.setAbilityStoreItem(ability), navigationStore.setDialog('deleteAbility')">
+						<NcActionButton @click="abilityStore.setAbilityItem(ability), navigationStore.setDialog('deleteAbility')">
 							<template #icon>
 								<TrashCanOutline/>
 							</template>

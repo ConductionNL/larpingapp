@@ -5,7 +5,7 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 <template>
 	<NcModal v-if="navigationStore.modal === 'editAbility'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
-			<h2>Vaardigheid aanpassen</h2>
+			<h2>Vaardigheid {{ abilityStore.abilityItem.id ? 'Aanpassen' : 'Aanmaken' }}</h2>
 			<NcNoteCard v-if="succes" type="success">
 				<p>Bijlage succesvol toegevoegd</p>
 			</NcNoteCard>
@@ -13,13 +13,16 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div v-if="!succes" class="form-group">
-				<NcTextField
-					:disabled="loading"
-					:value.sync="abilityStore.abilityItem.name"
-					label="Naam"
-					maxlength="255" />
-			</div>
+			<form v-if="!succes" @submit.prevent="handleSubmit">
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input v-model="abilityStore.abilityItem.name" id="name" required>
+				</div>
+				<div class="form-group">
+					<label for="description">Description:</label>
+					<textarea v-model="abilityStore.abilityItem.description" id="description"></textarea>
+				</div>
+			</form>
 
 			<NcButton
 				v-if="!succes"
@@ -72,16 +75,18 @@ export default {
 		async editAbility() {
 			this.loading = true
 			try {
-				await this.abilityStore.saveAbility(this.abilityStore.abilityItem)
+				await abilityStore.saveAbility()
 				// Close modal or show success message
 				this.succes = true
 				this.loading = false
 				setTimeout(function() {
-					this.navigationStore.setModal(false)
+					this.succes = false
+					navigationStore.setModal(false)
 				}, 2000)
 			} catch (error) {
 				this.loading = false
-				this.succes = error
+				this.succes = false
+				this.error = error.message || 'An error occurred while saving the character'
 			}
 		}
 	},

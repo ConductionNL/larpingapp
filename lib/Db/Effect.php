@@ -1,6 +1,6 @@
 <?php
 
-namespace OCA\OpenCatalogi\Db;
+namespace OCA\LarpingApp\Db;
 
 use DateTime;
 use JsonSerializable;
@@ -8,8 +8,6 @@ use OCP\AppFramework\Db\Entity;
 
 class Effect extends Entity implements JsonSerializable
 {
-
-	protected ?string $id = null;
 	protected ?string $name = null;
 	protected ?string $description = null;
 	protected ?string $statId = null;
@@ -18,13 +16,42 @@ class Effect extends Entity implements JsonSerializable
 	protected ?string $cumulative = 'non-cumulative';
 
 	public function __construct() {
-		$this->addType('id', 'string');
 		$this->addType('name', 'string');
 		$this->addType('description', 'string');
 		$this->addType('statId', 'string');
 		$this->addType('modifier', 'integer');
 		$this->addType('modification', 'string');
 		$this->addType('cumulative', 'string');
+	}
+
+	public function getJsonFields(): array
+	{
+		return array_keys(
+			array_filter($this->getFieldTypes(), function ($field) {
+				return $field === 'json';
+			})
+		);
+	}
+
+	public function hydrate(array $object): self
+	{
+		$jsonFields = $this->getJsonFields();
+
+		foreach($object as $key => $value) {
+			if (in_array($key, $jsonFields) === true && $value === []) {
+				$value = [];
+			}
+
+			$method = 'set'.ucfirst($key);
+
+			try {
+				$this->$method($value);
+			} catch (\Exception $exception) {
+//				("Error writing $key");
+			}
+		}
+
+		return $this;
 	}
 
 	public function jsonSerialize(): array

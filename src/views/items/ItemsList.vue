@@ -22,11 +22,11 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addBericht')">
+					<NcActionButton @click="itemStore.setItemItem([]); navigationStore.setModal('editItem')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Bericht toevoegen
+						Item toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -48,13 +48,13 @@
 						{{ item?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="itemStore.setItemItem(bericht); navigationStore.setModal('editBericht')">
+						<NcActionButton @click="itemStore.setItemItem(item); navigationStore.setModal('editItem')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="itemStore.setItemItem(bericht); navigationStore.setDialog('deleteBericht')">
+						<NcActionButton @click="itemStore.setItemItem(item); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>

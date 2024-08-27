@@ -22,7 +22,7 @@
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addSkill')">
+					<NcActionButton @click="skillStore.setSkillItem([]); navigationStore.setModal('editSkill')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

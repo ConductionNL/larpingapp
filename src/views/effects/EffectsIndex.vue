@@ -16,7 +16,7 @@
 					<MagicStaff />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('addEffect')">
+					<NcButton type="primary" @click="effectStore.setEffectItem([]); navigationStore.setModal('editEffect')">
 						Effect toevoegen
 					</NcButton>
 				</template>
