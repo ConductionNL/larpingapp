@@ -13,7 +13,7 @@
 				name="Geen Conditie"
 				description="Nog geen conditie geselecteerd">
 				<template #icon>
-					<AlertCircleOutline />
+					<EmoticonSickOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="conditionStore.setConditionItem([]); navigationStore.setModal('editCondition')">
@@ -30,7 +30,7 @@
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import ConditionsList from './ConditionsList.vue'
 import ConditionDetails from './ConditionsDetails.vue'
-import AlertCircleOutline from 'vue-material-design-icons/AlertCircleOutline.vue'
+import EmoticonSickOutline from 'vue-material-design-icons/EmoticonSickOutline.vue'
 
 export default {
 	name: 'ConditionsIndex',
@@ -40,7 +40,7 @@ export default {
 		NcButton,
 		ConditionsList,
 		ConditionDetails,
-		AlertCircleOutline,
+		EmoticonSickOutline,
 	},
 }
 </script>

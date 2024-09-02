@@ -19,6 +19,7 @@ We use [material design icons](https://pictogrammers.com/library/mdi/) in line w
 | PLAYERS     | [account-group-outline](https://pictogrammers.com/library/mdi/icon/account-group-outline/) | ![account-group-outline](../images/account-group-outline.png) |
 | ITEMS       | [sword](https://pictogrammers.com/library/mdi/icon/sword/) | ![sword](../images/sword.png) |
 | EVENTS      | [calendar-month-outline](https://pictogrammers.com/library/mdi/icon/calendar-month-outline/) | ![calendar-month-outline](../images/calendar-month-outline.png) |
+| CONDITIONS      | [emoticon-sick-outline](https://pictogrammers.com/library/mdi/icon/emoticon-sick-outline/) | ![calendar-month-outline](../images/emoticon-sick-outline.png) |
 | SEARCH      | [magnify](https://pictogrammers.com/library/mdi/icon/magnify/) | ![magnify](../images/magnify.png) |
 | ABILITIES   | [shield-sword-outline](https://pictogrammers.com/library/mdi/icon/shield-sword-outline/) | ![shield-sword-outline](../images/shield-sword-outline.png) |
 | SKILLS      | [sword-cross](https://pictogrammers.com/library/mdi/icon/sword-cross/) | ![sword-cross](../images/sword-cross.png) |

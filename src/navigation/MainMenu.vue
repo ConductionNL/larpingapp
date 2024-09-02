@@ -51,6 +51,14 @@ import { navigationStore } from '../store/store.js'
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
+				:active="navigationStore.selected === 'conditions'"
+				name="Conditions"
+				@click="navigationStore.setSelected('conditions')">
+				<template #icon>
+					<EmoticonSickOutline :size="20" />
+				</template>
+			</NcAppNavigationItem>
+			<NcAppNavigationItem
 				:active="navigationStore.selected === 'search'"
 				name="Zoeken"
 				@click="navigationStore.setSelected('search')">
@@ -120,7 +128,8 @@ import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue
 import SwordCross from 'vue-material-design-icons/SwordCross.vue'
 import MagicStaff from 'vue-material-design-icons/MagicStaff.vue'
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
+import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue' 
+import EmoticonSickOutline from 'vue-material-design-icons/EmoticonSickOutline.vue'
 
 export default {
 	name: 'MainMenu',
@@ -143,6 +152,7 @@ export default {
 		Configuration,
 		Magnify,
 		FileDocumentOutline,
+		EmoticonSickOutline,
 	},
 }
 </script>

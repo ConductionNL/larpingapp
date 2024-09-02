@@ -40,10 +40,6 @@
 						<b>Omschrijving:</b>
 						<span>{{ conditionStore.conditionItem.description }}</span>
 					</div>
-					<div>
-						<b>Effect:</b>
-						<span>{{ conditionStore.conditionItem.effect }}</span>
-					</div>
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>

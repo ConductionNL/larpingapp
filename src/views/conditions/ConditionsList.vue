@@ -40,7 +40,7 @@
 					:details="condition?.unique ? 'Uniek' : 'Niet uniek'"
 					@click="conditionStore.setConditionItem(condition)">
 					<template #icon>
-						<AlertCircleOutline :class="conditionStore.conditionItem?.id === condition?.id && 'selectedConditionIcon'"
+						<EmoticonSickOutline :class="conditionStore.conditionItem?.id === condition?.id && 'selectedConditionIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -82,7 +82,7 @@ import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, N
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-import AlertCircleOutline from 'vue-material-design-icons/AlertCircleOutline.vue'
+import EmoticonSickOutline from 'vue-material-design-icons/EmoticonSickOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
@@ -99,7 +99,7 @@ export default {
 		NcTextField,
 		NcLoadingIcon,
 		// Icons
-		AlertCircleOutline,
+		EmoticonSickOutline,
 		Magnify,
 		Refresh,
 		Plus,

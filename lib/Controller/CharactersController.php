@@ -209,6 +209,10 @@ class CharactersController extends Controller
 			}
 		}
         
+		if (isset($data['id'])) {
+			unset($data['id']);
+		}
+        
         return new JSONResponse($this->characterMapper->createFromArray(object: $data));
     }
 
