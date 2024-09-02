@@ -12,7 +12,7 @@ class CharacterMapper extends QBMapper
 {
 	public function __construct(IDBConnection $db)
 	{
-		parent::__construct($db, 'larpingapp_characters');
+		parent::__construct($db, 'larpingapp_conditions');
 	}
 
 	public function find(int $id): Condition
@@ -20,7 +20,7 @@ class CharacterMapper extends QBMapper
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
-			->from('larpingapp_characters')
+			->from('larpingapp_conditions')
 			->where(
 				$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
 			);
@@ -33,7 +33,7 @@ class CharacterMapper extends QBMapper
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
-			->from('larpingapp_characters')
+			->from('larpingapp_conditions')
 			->setMaxResults($limit)
 			->setFirstResult($offset);
 

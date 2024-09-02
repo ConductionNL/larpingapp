@@ -147,7 +147,7 @@ class ConditionsController extends Controller
                 unset($data[$key]);
             }
         }
-        
+
 		if (isset($data['id'])) {
 			unset($data['id']);
 		}
