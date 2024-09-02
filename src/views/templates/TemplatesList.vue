@@ -64,11 +64,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!templateStore.templateList  || templateStore.templateList.length === 0"
+		<NcLoadingIcon v-if="!templateStore.templateList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Rollen aan het laden" />
+
+		<div v-if="templateStore.templateList.length === 0">
+			Er zijn nog geen sjablonen gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>

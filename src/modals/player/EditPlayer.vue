@@ -7,7 +7,7 @@ import { playerStore, navigationStore } from '../../store/store.js'
 		<div class="modalContent">
 			<h2>Speler {{ playerStore.playerItem.id ? 'Aanpassen' : 'Aanmaken' }}</h2>
 			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
+				<p>Speler succesvol toegevoegd</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -79,8 +79,10 @@ export default {
 				// Close modal or show success message
 				this.succes = true
 				this.loading = false
-				setTimeout(function() {
+				setTimeout(() => {
 					this.succes = false
+					this.loading = false
+					this.error = false
 					navigationStore.setModal(false)
 				}, 2000)
 			} catch (error) {

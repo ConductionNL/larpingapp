@@ -30,6 +30,7 @@
 					</NcActionButton>
 				</NcActions>
 			</div>
+
 			<div v-if="characterStore.characterList && characterStore.characterList.length > 0">
 				<NcListItem v-for="(character, i) in characterStore.characterList"
 					:key="`${character}${i}`"
@@ -65,11 +66,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!characterStore.characterList  || characterStore.characterList.length === 0"
+		<NcLoadingIcon v-if="!characterStore.characterList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Zaken aan het laden" />
+
+		<div v-if="characterStore.characterList.length === 0">
+			Er zijn nog geen karakters gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -107,7 +112,15 @@ export default {
 	},
 }
 </script>
+
 <style>
+.listHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--color-main-background);
+    border-bottom: 1px solid var(--color-border);
+}
 
 .searchField {
     padding-inline-start: 65px;
@@ -115,11 +128,11 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selectedIcon>svg {
     fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+    margin-block-start: var(--OC-margin-20);
 }
 </style>

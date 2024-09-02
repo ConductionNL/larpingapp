@@ -65,11 +65,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!itemStore.itemList  || itemStore.itemList.length === 0"
+		<NcLoadingIcon v-if="!itemStore.itemList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="berichten aan het laden" />
+
+		<div v-if="itemStore.itemList.length === 0">
+			Er zijn nog geen voorwerpen gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -108,7 +112,6 @@ export default {
 }
 </script>
 <style>
-
 .listHeader {
     position: sticky;
     top: 0;
@@ -123,11 +126,11 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selectedIcon>svg {
     fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+    margin-block-start: var(--OC-margin-20);
 }
 </style>

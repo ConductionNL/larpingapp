@@ -9,71 +9,17 @@
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ store.berichtItem.onderwerp }}
+						{{ itemStore.itemItem.name }}
 					</h1>
-
-					<NcActions :primary="true" menu-name="Acties">
-						<template #icon>
-							<DotsHorizontal :size="20" />
-						</template>
-						<NcActionButton @click="store.setModal('editBericht')">
-							<template #icon>
-								<Pencil :size="20" />
-							</template>
-							Bewerken
-						</NcActionButton>
-						<NcActionButton @click="store.setDialog('deleteBericht')">
-							<template #icon>
-								<TrashCanOutline :size="20" />
-							</template>
-							Verwijderen
-						</NcActionButton>
-					</NcActions>
 				</div>
 				<div class="detailGrid">
 					<div>
 						<b>Berichttekst:</b>
-						<p>{{ store.berichtItem.berichttekst }}</p>
+						<p>{{ itemStore.itemItem.name }}</p>
 					</div>
 					<div>
 						<b>Inhoud:</b>
-						<p>{{ store.berichtItem.inhoud }}</p>
-					</div>
-					<div>
-						<b>Soort gebruiker:</b>
-						<span>{{ store.berichtItem.soortGebruiker }}</span>
-					</div>
-					<div>
-						<b>Publicatiedatum:</b>
-						<span>{{ store.berichtItem.publicatieDatum }}</span>
-					</div>
-					<div>
-						<b>Aanmaak datum:</b>
-						<span>{{ store.berichtItem.aanmaakDatum }}</span>
-					</div>
-					<div>
-						<b>Bericht type:</b>
-						<span>{{ store.berichtItem.berichtType }}</span>
-					</div>
-					<div>
-						<b>Referentie:</b>
-						<span>{{ store.berichtItem.referentie }}</span>
-					</div>
-					<div>
-						<b>Bericht ID:</b>
-						<span>{{ store.berichtItem.berichtID }}</span>
-					</div>
-					<div>
-						<b>Batch ID:</b>
-						<span>{{ store.berichtItem.batchID }}</span>
-					</div>
-					<div>
-						<b>Gebruiker ID:</b>
-						<span>{{ store.berichtItem.gebruikerID }}</span>
-					</div>
-					<div>
-						<b>Volgorde:</b>
-						<span>{{ store.berichtItem.volgorde }}</span>
+						<p>{{ itemStore.itemItem.name }}</p>
 					</div>
 				</div>
 			</div>

@@ -64,11 +64,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!skillStore.skillList  || skillStore.skillList.length === 0"
+		<NcLoadingIcon v-if="!skillStore.skillList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Zaken aan het laden" />
+
+		<div v-if="skillStore.skillList.length === 0">
+			Er zijn nog geen vaardigheden gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>

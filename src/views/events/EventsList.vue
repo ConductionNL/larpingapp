@@ -65,11 +65,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!eventStore.eventList  || eventStore.eventList.length === 0"
+		<NcLoadingIcon v-if="!eventStore.eventList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Taken aan het laden" />
+
+		<div v-if="eventStore.eventList.length === 0">
+		Er zijn nog geen evenementen gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -122,11 +126,11 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selectedIcon>svg {
     fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+    margin-block-start: var(--OC-margin-20);
 }
 </style>

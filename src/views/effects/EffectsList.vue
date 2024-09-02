@@ -65,11 +65,15 @@
 			</div>
 		</ul> 
 
-		<NcLoadingIcon v-if="!effectStore.effectList  || effectStore.effectList.length === 0"
+		<NcLoadingIcon v-if="!effectStore.effectList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Klanten aan het laden" />
+
+		<div v-if="effectStore.effectList.length === 0">
+			Er zijn nog geen vaardigheden gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -104,6 +108,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;
@@ -119,11 +124,11 @@ export default {
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selectedIcon>svg {
     fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+    margin-block-start: var(--OC-margin-20);
 }
 </style>

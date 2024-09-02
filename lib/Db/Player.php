@@ -9,7 +9,7 @@ use OCP\AppFramework\Db\Entity;
 class Player extends Entity implements JsonSerializable
 {
 
-	protected ?string $title 	    = null;
+	protected ?string $name 	    = null;
 	protected ?string $summary      = null;
 	protected ?string $description  = null;
 	protected ?string $image        = null;
@@ -20,7 +20,7 @@ class Player extends Entity implements JsonSerializable
 	protected ?array   $metadata    = null;
 
 	public function __construct() {
-		$this->addType(fieldName: 'title', type: 'string');
+		$this->addType(fieldName: 'name', type: 'string');
 		$this->addType(fieldName: 'summary', type: 'string');
 		$this->addType(fieldName: 'description', type: 'string');
 		$this->addType(fieldName: 'image', type: 'string');
@@ -65,7 +65,7 @@ class Player extends Entity implements JsonSerializable
 	{
 		$array = [
 			'id' => $this->id,
-			'title' => $this->title,
+			'name' => $this->name,
 			'summary' => $this->summary,
 			'description' => $this->description,
 			'image' => $this->image,

@@ -15,7 +15,7 @@ import { templateStore, navigationStore } from '../../store/store.js'
             <p>{{ error }}</p>
         </NcNoteCard>
 
-        <div class="formContainer">
+        <div v-if="!success" class="formContainer">
             <NcTextField :disabled="loading"
                 label="Name *"
                 required
@@ -82,6 +82,8 @@ export default {
                 this.loading = false
                 setTimeout(() => {
                     this.success = false
+					this.loading = false
+					this.error = false
                     navigationStore.setModal(false)
                 }, 2000)
             } catch (error) {

@@ -64,11 +64,15 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!abilityStore.abilityList  || abilityStore.abilityList.length === 0"
+		<NcLoadingIcon v-if="!abilityStore.abilityList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Vaardigheden aan het laden" />
+
+		<div v-if="abilityStore.abilityList.length === 0">
+			Er zijn nog geen vaardigheden gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -106,6 +110,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;
@@ -121,11 +126,11 @@ export default {
     margin-block-end: 6px;
 }
 
-.selected>svg {
+.selectedIcon>svg {
     fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+    margin-block-start: var(--OC-margin-20);
 }
 </style>

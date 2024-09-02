@@ -112,6 +112,8 @@ export default {
 				this.error = false
 				setTimeout(() => {
 					this.success = false
+					this.loading = false
+					this.error = false
 					navigationStore.setModal(false)
 				}, 2000)
 			} catch (error) {

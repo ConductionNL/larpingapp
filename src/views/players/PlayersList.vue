@@ -64,11 +64,15 @@
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!playerStore.playerList  || playerStore.playerList.length === 0"
+		<NcLoadingIcon v-if="!playerStore.playerList "
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Besluiten aan het laden" />
+
+		<div v-if="playerStore.playerList.length === 0">
+			Er zijn nog geen spelers gedefinieerd.
+		</div>
 	</NcAppContentList>
 </template>
 <script>

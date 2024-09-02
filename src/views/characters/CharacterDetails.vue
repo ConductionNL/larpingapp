@@ -4,7 +4,7 @@
 
 <template>
 	<div class="detailContainer">
-		<div v-if="characterStore.characterItem" id="app-content">
+		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">

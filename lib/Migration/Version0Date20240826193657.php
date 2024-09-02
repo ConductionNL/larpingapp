@@ -58,7 +58,7 @@ class Version0Date20240826193657 extends SimpleMigrationStep {
 		}
 
 		if (!$schema->hasTable('larpingapp_players')) {
-			$table = $schema->createTable('larpingapp_abilities');
+			$table = $schema->createTable('larpingapp_players');
 			$table->addColumn('id', Types::BIGINT, ['autoincrement' => true, 'notnull' => true, 'length' => 20]);
 			$table->addColumn('name', Types::STRING, ['notnull' => true, 'length' => 255]);
 			$table->addColumn('description', Types::TEXT, ['notnull' => false]);

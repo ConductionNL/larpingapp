@@ -79,8 +79,10 @@ export default {
 				// Close modal or show success message
 				this.succes = true
 				this.loading = false
-				setTimeout(function() {
+				setTimeout(() => {
 					this.succes = false
+					this.loading = false
+					this.error = false
 					navigationStore.setModal(false)
 				}, 2000)
 			} catch (error) {
