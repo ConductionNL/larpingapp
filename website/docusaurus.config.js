@@ -39,6 +39,26 @@ const config = {
         },
       }),
     ],
+    [
+      'redocusaurus',
+      {
+        // Plugin Options for loading OpenAPI files
+        specs: [
+          // Pass it a path to a local OpenAPI YAML file
+          {
+            // Redocusaurus will automatically bundle your spec into a single file during the build
+            id: 'larpingapp',
+            spec: 'static/oas/larpingapp.yaml',
+            route: '/api',
+          },
+        ],
+        // Theme Options for modifying how redoc renders them
+        theme: {
+          // Change with your site colors
+          primaryColor: '#1890ff',
+        },
+      },
+    ]
   ],
 
   themeConfig:
@@ -56,6 +76,11 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Documentation',
+          },
+          {
+            href: '/api',
+            label: 'API Documentation',
+            position: 'right',
           },
           {
             href: 'https://github.com/conductionnl/larpingapp',
