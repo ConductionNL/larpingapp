@@ -1,27 +1,25 @@
 <script setup>
-import { characterStore, conditionStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.dialog === 'deleteConditionFromCharacter'"
-		name="Condition van karakter verwijderen"
+		name="Condition verwijderen"
 		size="normal"
 		:can-close="false">
+		<p v-if="!success">
+			Wil je <b>{{ objectStore.objectItem.name }}</b> definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+		</p>
+
 		<NcNoteCard v-if="success" type="success">
-			<p>Condition succesvol verwijderd van karakter</p>
+			<p>Condition succesvol verwijderd</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
-
-		<div v-if="!success" class="formContainer">
-			<p>
-				Wil je <b>{{ conditionStore.conditionItem?.name }}</b> verwijderen van <b>{{ characterStore.characterItem?.name }}</b>?
-			</p>
-			<NcNoteCard type="info" heading="Let op">
-				Het verwijderen van een condition op een karakter zal leiden tot een herberekening van de statistieken van het karakter. Dit is een asynchroon proces, dus het kan even duren voordat de wijzigingen zichtbaar worden.
-			</NcNoteCard>
-		</div>
 
 		<template #actions>
 			<NcButton
@@ -79,12 +77,12 @@ export default {
 		async deleteConditionFromCharacter() {
 			this.loading = true
 			try {
-				const characterItemClone = { ...characterStore.characterItem }
+				const characterItemClone = { ...objectStore.objectItem }
 
-				// Find the index of the item to delete
-				const index = characterItemClone.conditions.findIndex(item => item === conditionStore.conditionItem.id)
+				// Find the index of the condition to delete
+				const index = characterItemClone.conditions.findIndex(condition => condition === objectStore.objectItem.id)
 
-				// Remove the item if it exists
+				// Remove the condition if it exists
 				if (index !== -1) {
 					characterItemClone.conditions.splice(index, 1)
 				} else {
@@ -95,9 +93,9 @@ export default {
 					throw Error('Error: character ID was not found')
 				}
 
-				await characterStore.saveCharacter({
-					...characterItemClone,
-				})
+				// Set the object type to 'character' before saving
+				objectStore.setObjectType('character')
+				await objectStore.saveObject(characterItemClone)
 
 				// Close modal or show success message
 				this.success = true
@@ -110,7 +108,7 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while saving the character'
+				this.error = error.message || 'An error occurred while deleting the condition'
 			}
 		},
 	},

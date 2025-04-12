@@ -1,5 +1,14 @@
 <script setup>
-import { itemStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+import { onMounted } from 'vue'
+
+const objectStore = useObjectStore()
+
+// Set the object type to 'item'
+onMounted(() => {
+	objectStore.setObjectType('item')
+})
 </script>
 
 <template>
@@ -8,7 +17,7 @@ import { itemStore, navigationStore } from '../../store/store.js'
 			<ItemsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!itemStore.itemItem || navigationStore.selected != 'items' "
+			<NcEmptyContent v-if="!objectStore.objectItem || navigationStore.selected != 'items'"
 				class="detailContainer"
 				name="Geen item"
 				description="Nog geen item geselecteerd">
@@ -16,12 +25,12 @@ import { itemStore, navigationStore } from '../../store/store.js'
 					<Sword />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="itemStore.setItemItem(null); navigationStore.setModal('editItem')">
+					<NcButton type="primary" @click="objectStore.setObjectItem(null); navigationStore.setModal('editItem')">
 						Item aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ItemDetails v-if="itemStore.itemItem && navigationStore.selected === 'items'" />
+			<ItemDetails v-if="objectStore.objectItem && navigationStore.selected === 'items'" />
 		</template>
 	</NcAppContent>
 </template>

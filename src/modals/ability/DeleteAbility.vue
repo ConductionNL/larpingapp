@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -8,7 +11,7 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
-			Wil je <b>{{ abilityStore.abilityItem.name }}</b> definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+			Wil je <b>{{ objectStore.objectItem.name }}</b> definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
@@ -74,7 +77,7 @@ export default {
 		async deleteAbility() {
 			this.loading = true
 			try {
-				await abilityStore.deleteAbility()
+				await objectStore.deleteObject()
 				// Close modal or show success message
 				this.success = true
 				this.loading = false

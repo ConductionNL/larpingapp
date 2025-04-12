@@ -1,5 +1,14 @@
 <script setup>
-import { effectStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+import { onMounted } from 'vue'
+
+const objectStore = useObjectStore()
+
+// Set the object type to 'effect'
+onMounted(() => {
+	objectStore.setObjectType('effect')
+})
 </script>
 
 <template>
@@ -8,7 +17,7 @@ import { effectStore, navigationStore } from '../../store/store.js'
 			<EffectsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!effectStore.effectItem || navigationStore.selected != 'effects' "
+			<NcEmptyContent v-if="!objectStore.objectItem || navigationStore.selected != 'effects'"
 				class="detailContainer"
 				name="Geen effect"
 				description="Nog geen effect geselecteerd">
@@ -16,12 +25,12 @@ import { effectStore, navigationStore } from '../../store/store.js'
 					<MagicStaff />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="effectStore.setEffectItem(null); navigationStore.setModal('addEffect')">
+					<NcButton type="primary" @click="objectStore.setObjectItem(null); navigationStore.setModal('addEffect')">
 						Effect toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<EffectDetails v-if="effectStore.effectItem && navigationStore.selected === 'effects'" />
+			<EffectDetails v-if="objectStore.objectItem && navigationStore.selected === 'effects'" />
 		</template>
 	</NcAppContent>
 </template>

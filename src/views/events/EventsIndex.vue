@@ -1,5 +1,14 @@
 <script setup>
-import { eventStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+import { onMounted } from 'vue'
+
+const objectStore = useObjectStore()
+
+// Set the object type to 'event'
+onMounted(() => {
+	objectStore.setObjectType('event')
+})
 </script>
 
 <template>
@@ -8,7 +17,7 @@ import { eventStore, navigationStore } from '../../store/store.js'
 			<EventsList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!eventStore.eventItem || navigationStore.selected != 'events' "
+			<NcEmptyContent v-if="!objectStore.objectItem || navigationStore.selected != 'events'"
 				class="detailContainer"
 				name="Geen event"
 				description="Nog geen event geselecteerd">
@@ -16,12 +25,12 @@ import { eventStore, navigationStore } from '../../store/store.js'
 					<CalendarMonthOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="eventStore.setEventItem(null); navigationStore.setModal('editEvent')">
+					<NcButton type="primary" @click="objectStore.setObjectItem(null); navigationStore.setModal('editEvent')">
 						Event toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<EventDetails v-if="eventStore.eventItem && navigationStore.selected === 'events'" />
+			<EventDetails v-if="objectStore.objectItem && navigationStore.selected === 'events'" />
 		</template>
 	</NcAppContent>
 </template>

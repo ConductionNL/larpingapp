@@ -1,5 +1,8 @@
 <script setup>
-import { characterStore, eventStore, navigationStore, searchStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -7,23 +10,23 @@ import { characterStore, eventStore, navigationStore, searchStore } from '../../
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value="eventStore.searchTerm"
-					:show-trailing-button="eventStore.searchTerm !== ''"
+					:value="objectStore.searchTerm"
+					:show-trailing-button="objectStore.searchTerm !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@input="eventStore.setSearchTerm($event.target.value)"
-					@trailing-button-click="eventStore.clearSearch()">
+					@input="objectStore.setSearchTerm($event.target.value)"
+					@trailing-button-click="objectStore.clearSearch()">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="eventStore.refreshEventList()">
+					<NcActionButton @click="objectStore.refreshObjectList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="eventStore.setEventItem(null); navigationStore.setModal('editEvent')">
+					<NcActionButton @click="objectStore.setObjectItem(null); navigationStore.setModal('editEvent')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -31,16 +34,16 @@ import { characterStore, eventStore, navigationStore, searchStore } from '../../
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="eventStore.eventList && eventStore.eventList.length > 0 && !eventStore.isLoadingEventList">
-				<NcListItem v-for="(event, i) in eventStore.eventList"
+			<div v-if="objectStore.objectList && objectStore.objectList.length > 0 && !objectStore.isLoadingObjectList">
+				<NcListItem v-for="(event, i) in objectStore.objectList"
 					:key="`${event}${i}`"
 					:name="event?.name"
 					:force-display-actions="true"
-					:active="eventStore.eventItem?.id === event?.id"
+					:active="objectStore.objectItem?.id === event?.id"
 					:details="event.startDate"
-					@click="handleEventSelect(event)">
+					@click="objectStore.setObjectItem(event)">
 					<template #icon>
-						<CalendarMonthOutline :class="eventStore.eventItem?.id === event.id && 'selectedZaakIcon'"
+						<CalendarMonthOutline :class="objectStore.objectItem?.id === event.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +51,13 @@ import { characterStore, eventStore, navigationStore, searchStore } from '../../
 						{{ event?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="eventStore.setEventItem(event); navigationStore.setModal('editEvent')">
+						<NcActionButton @click="objectStore.setObjectItem(event); navigationStore.setModal('editEvent')">
 							<template #icon>
 								<Pencil />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="eventStore.setEventItem(event), navigationStore.setDialog('deleteEvent')">
+						<NcActionButton @click="objectStore.setObjectItem(event); navigationStore.setDialog('deleteEvent')">
 							<template #icon>
 								<TrashCanOutline />
 							</template>
@@ -65,13 +68,13 @@ import { characterStore, eventStore, navigationStore, searchStore } from '../../
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="eventStore.isLoadingEventList"
+		<NcLoadingIcon v-if="objectStore.isLoadingObjectList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Evenementen aan het laden" />
 
-		<div v-if="eventStore.eventList.length === 0 && !eventStore.isLoadingEventList">
+		<div v-if="objectStore.objectList.length === 0 && !objectStore.isLoadingObjectList">
 			Er zijn nog geen evenementen gedefinieerd.
 		</div>
 	</NcAppContentList>
@@ -104,43 +107,34 @@ export default {
 		Plus,
 		Pencil,
 		TrashCanOutline,
+		Refresh,
 	},
 	mounted() {
-		eventStore.refreshEventList()
-	},
-	methods: {
-		/**
-		 * Handle event selection and fetch related data
-		 * @param {Object} event - The selected event object
-		 */
-		async handleEventSelect(event) {
-			// Set the selected event in the store
-			eventStore.setEventItem(event)
-		},
+		objectStore.refreshObjectList()
 	},
 }
 </script>
 
 <style>
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--OC-margin-20);
+	margin-block-start: var(--OC-margin-20);
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { skillStore, navigationStore, effectStore } from '../../store/store.js'
+import { skillStore, navigationStore, objectStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -137,10 +137,15 @@ export default {
 		fetchEffects() {
 			this.effectsLoading = true
 
-			effectStore.refreshEffectList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to effect type to fetch effects
+			objectStore.setObjectType('effect')
+			objectStore.refreshObjectList()
 				.then(() => {
 					const activatedEffects = skillStore.skillItem?.id // if modal is an edit modal
-						? effectStore.effectList.filter((effect) => { // filter through the list of effects
+						? objectStore.objectList.filter((effect) => { // filter through the list of effects
 							return (skillStore.skillItem.effects || [])
 								.map(String) // ensure all the effect id's in the skill are a string (this does not change the resulting data type)
 								.includes(effect.id.toString()) // check if the current effect in the filter exists on the skill's effects
@@ -150,7 +155,7 @@ export default {
 					this.effects = {
 						multiple: true,
 						closeOnSelect: false,
-						options: effectStore.effectList.map((effect) => ({
+						options: objectStore.objectList.map((effect) => ({
 							id: effect.id,
 							label: effect.name,
 						})),
@@ -163,6 +168,9 @@ export default {
 					}
 
 					this.effectsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editSkill() {

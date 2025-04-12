@@ -1,47 +1,51 @@
 <script setup>
-import { characterStore, conditionStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'addConditionToCharacter'"
-		name="Condities bewerken"
+		name="Conditions toevoegen"
 		size="normal"
-		:can-close="false">
+		:can-close="false"
+		@close="closeModal">
 		<NcNoteCard v-if="success" type="success">
-			<p>Condities succesvol bijgewerkt</p>
+			<p>Conditions succesvol toegevoegd</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
 
 		<div v-if="!success" class="formContainer">
-			<p>Let op: Het bewerken van condities kan invloed hebben op de eigenschappen van het karakter. Dit is een asynchroon proces, dus het kan even duren voordat de wijzigingen zichtbaar worden.</p>
-
 			<NcSelect v-bind="conditions"
 				v-model="selectedConditions"
-				input-label="Condities *"
+				input-label="Conditions *"
 				:loading="conditionsLoading"
-				:disabled="conditionsLoading"
-				required />
+				:disabled="conditionsLoading || loading" />
 		</div>
 
 		<template #actions>
-			<NcButton @click="closeModal">
+			<NcButton
+				@click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ success ? 'Sluiten' : 'Annuleer' }}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
-				:disabled="loading || conditionsLoading"
+			<NcButton
+				v-if="!success"
+				:disabled="loading"
 				type="primary"
-				@click="saveConditions()">
+				@click="addConditionsToCharacter()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Save v-if="!loading" :size="20" />
@@ -62,7 +66,7 @@ import {
 } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Save from 'vue-material-design-icons/ContentSave.vue'
+import Save from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
@@ -107,41 +111,63 @@ export default {
 			this.hasUpdated = false
 			this.selectedConditions = []
 		},
-		fetchConditions() {
+		async fetchConditions() {
 			this.conditionsLoading = true
 
-			conditionStore.refreshConditionList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to condition type to fetch conditions
+			objectStore.setObjectType('condition')
+			await objectStore.refreshObjectList()
 				.then(() => {
 					// Create options from all available conditions
 					this.conditions = {
 						multiple: true,
 						closeOnSelect: false,
-						options: conditionStore.conditionList.map((condition) => ({
+						options: objectStore.objectList.map((condition) => ({
 							id: condition.id,
 							label: condition.name,
 						})),
 					}
 
 					// Pre-select existing conditions
-					if (characterStore.characterItem?.conditions?.length) {
-						this.selectedConditions = characterStore.characterItem.conditions.map(condition => ({
+					if (objectStore.objectItem?.conditions?.length) {
+						this.selectedConditions = objectStore.objectItem.conditions.map(condition => ({
 							id: condition.id || condition,
-							label: conditionStore.conditionList.find(c => c.id === (condition.id || condition))?.name || '',
+							label: objectStore.objectList.find(c => c.id === (condition.id || condition))?.name || '',
 						}))
 					}
 
 					this.conditionsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
+				})
+				.catch((error) => {
+					console.error('Error fetching conditions:', error)
+					this.conditionsLoading = false
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
-		async saveConditions() {
+		async addConditionsToCharacter() {
 			this.loading = true
 			try {
-				const characterItemClone = { ...characterStore.characterItem }
+				const characterItemClone = { ...objectStore.objectItem }
 				
 				// Replace conditions array with selected conditions, ensuring uniqueness
 				const uniqueConditions = [...new Map(this.selectedConditions.map(condition => [condition.id, condition])).values()]
+				
+				// Store current object type
+				const currentType = objectStore.objectType
+				
+				// Switch to condition type to fetch full condition data
+				objectStore.setObjectType('condition')
+				await objectStore.refreshObjectList()
+				
 				characterItemClone.conditions = uniqueConditions.map(selected => {
-					const conditionData = conditionStore.conditionList.find(c => c.id === selected.id)
+					const conditionData = objectStore.objectList.find(c => c.id === selected.id)
 					return {
 						objectType: 'condition',
 						id: conditionData.id,
@@ -151,7 +177,9 @@ export default {
 					}
 				})
 
-				await characterStore.saveCharacter(characterItemClone)
+				// Switch back to character type for saving
+				objectStore.setObjectType('character')
+				await objectStore.saveObject(characterItemClone)
 
 				this.success = true
 				this.loading = false
@@ -164,6 +192,9 @@ export default {
 				this.success = false
 				this.error = error.message || 'Er is een fout opgetreden bij het bewerken van de condities'
 			}
+		},
+		openLink(url, target) {
+			window.open(url, target)
 		},
 	},
 }

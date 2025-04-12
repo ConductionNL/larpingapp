@@ -1,5 +1,8 @@
 <script setup>
-import { itemStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import { itemStore, navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ itemStore.itemItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -33,20 +36,20 @@ import { itemStore, navigationStore } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ itemStore.itemItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ itemStore.itemItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 			</div>
 		</div>
 		<div class="tabContainer">
 			<BTabs content-class="mt-3" justified>
 				<BTab>
 					<template #title>
-						Effects <NcCounterBubble>{{ itemStore.itemItem?.effects?.length || 0 }}</NcCounterBubble>
+						Effects <NcCounterBubble>{{ objectStore.objectItem?.effects?.length || 0 }}</NcCounterBubble>
 					</template>
-					<div v-if="itemStore.itemItem?.effects?.length > 0">
-						<NcListItem v-for="(effect) in itemStore.itemItem.effects"
+					<div v-if="objectStore.objectItem?.effects?.length > 0">
+						<NcListItem v-for="(effect) in objectStore.objectItem.effects"
 							:key="effect.id"
 							:name="effect.name"
 							:bold="false"
@@ -68,15 +71,15 @@ import { itemStore, navigationStore } from '../../store/store.js'
 				</BTab>
 				<BTab>
 					<template #title>
-						Characters <NcCounterBubble>{{ itemStore.relations ? itemStore.relations.length : 0 }}</NcCounterBubble>
+						Characters <NcCounterBubble>{{ objectStore.relations ? objectStore.relations.length : 0 }}</NcCounterBubble>
 					</template>
-					<ObjectList :objects="itemStore.relations" />							
+					<ObjectList :objects="objectStore.relations" />							
 				</BTab>
 				<BTab>
 					<template #title>
-						Logging <NcCounterBubble>{{ itemStore.auditTrails ? itemStore.auditTrails.length : 0 }}</NcCounterBubble>
+						Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
 					</template>
-					<AuditList :logs="itemStore.auditTrails" />
+					<AuditList :logs="objectStore.auditTrails" />
 				</BTab>
 			</BTabs>
 		</div>
@@ -114,6 +117,7 @@ export default {
 		BriefcaseAccountOutline,
 		Pencil,
 		TrashCanOutline,
+		DotsHorizontal,
 	},
 }
 </script>

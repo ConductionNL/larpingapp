@@ -1,5 +1,8 @@
 <script setup>
-import { characterStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -8,7 +11,7 @@ import { characterStore, navigationStore } from '../../store/store.js'
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
-			Wil je <b>{{ characterStore.characterItem.name }}</b> definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+			Wil je <b>{{ objectStore.objectItem.name }}</b> definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
@@ -74,7 +77,10 @@ export default {
 		async deleteCharacter() {
 			this.loading = true
 			try {
-				await characterStore.deleteCharacter()
+				// Set the object type to 'character' before deleting
+				objectStore.setObjectType('character')
+				await objectStore.deleteObject()
+				
 				// Close modal or show success message
 				this.success = true
 				this.loading = false
@@ -86,7 +92,7 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while saving the character'
+				this.error = error.message || 'An error occurred while deleting the character'
 			}
 		},
 	},

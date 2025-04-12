@@ -1,47 +1,51 @@
 <script setup>
-import { characterStore, skillStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'addSkillToCharacter'"
-		name="Vaardigheden bewerken"
+		name="Skills toevoegen"
 		size="normal"
-		:can-close="false">
+		:can-close="false"
+		@close="closeModal">
 		<NcNoteCard v-if="success" type="success">
-			<p>Vaardigheden succesvol bijgewerkt</p>
+			<p>Skills succesvol toegevoegd</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
 
 		<div v-if="!success" class="formContainer">
-			<p>Let op: Het bewerken van vaardigheden zal leiden tot een herberekening van de statistieken van het karakter. Dit is een asynchroon proces, dus het kan even duren voordat de wijzigingen zichtbaar worden.</p>
-
 			<NcSelect v-bind="skills"
 				v-model="selectedSkills"
-				input-label="Vaardigheden *"
+				input-label="Skills *"
 				:loading="skillsLoading"
-				:disabled="skillsLoading"
-				required />
+				:disabled="skillsLoading || loading" />
 		</div>
 
 		<template #actions>
-			<NcButton @click="closeModal">
+			<NcButton
+				@click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ success ? 'Sluiten' : 'Annuleer' }}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
-				:disabled="loading || skillsLoading"
+			<NcButton
+				v-if="!success"
+				:disabled="loading"
 				type="primary"
-				@click="saveSkills()">
+				@click="addSkillsToCharacter()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Save v-if="!loading" :size="20" />
@@ -62,7 +66,7 @@ import {
 } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Save from 'vue-material-design-icons/ContentSave.vue'
+import Save from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
@@ -107,40 +111,63 @@ export default {
 			this.hasUpdated = false
 			this.selectedSkills = []
 		},
-		fetchSkills() {
+		async fetchSkills() {
 			this.skillsLoading = true
 
-			skillStore.refreshSkillList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to skill type to fetch skills
+			objectStore.setObjectType('skill')
+			await objectStore.refreshObjectList()
 				.then(() => {
 					// Create options from all available skills
 					this.skills = {
 						multiple: true,
 						closeOnSelect: false,
-						options: skillStore.skillList.map((skill) => ({
+						options: objectStore.objectList.map((skill) => ({
 							id: skill.id,
 							label: skill.name,
 						})),
 					}
 
 					// Pre-select existing skills
-					if (characterStore.characterItem?.skills?.length) {
-						this.selectedSkills = characterStore.characterItem.skills.map(skill => ({
-							id: skill.id,
-							label: skill.name,
+					if (objectStore.objectItem?.skills?.length) {
+						this.selectedSkills = objectStore.objectItem.skills.map(skill => ({
+							id: skill.id || skill,
+							label: objectStore.objectList.find(s => s.id === (skill.id || skill))?.name || '',
 						}))
 					}
 
 					this.skillsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
+				})
+				.catch((error) => {
+					console.error('Error fetching skills:', error)
+					this.skillsLoading = false
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
-		async saveSkills() {
+		async addSkillsToCharacter() {
 			this.loading = true
 			try {
-				const characterItemClone = { ...characterStore.characterItem }
+				const characterItemClone = { ...objectStore.objectItem }
 				
 				// Replace skills array with selected skills
-				characterItemClone.skills = this.selectedSkills.map(selected => {
-					const skillData = skillStore.skillList.find(s => s.id === selected.id)
+				const uniqueSkills = [...new Map(this.selectedSkills.map(skill => [skill.id, skill])).values()]
+				
+				// Store current object type
+				const currentType = objectStore.objectType
+				
+				// Switch to skill type to fetch full skill data
+				objectStore.setObjectType('skill')
+				await objectStore.refreshObjectList()
+				
+				characterItemClone.skills = uniqueSkills.map(selected => {
+					const skillData = objectStore.objectList.find(s => s.id === selected.id)
 					return {
 						objectType: 'skill',
 						id: skillData.id,
@@ -151,7 +178,9 @@ export default {
 					}
 				})
 
-				await characterStore.saveCharacter(characterItemClone)
+				// Switch back to character type for saving
+				objectStore.setObjectType('character')
+				await objectStore.saveObject(characterItemClone)
 
 				this.success = true
 				this.loading = false
@@ -164,6 +193,9 @@ export default {
 				this.success = false
 				this.error = error.message || 'Er is een fout opgetreden bij het bewerken van de vaardigheden'
 			}
+		},
+		openLink(url, target) {
+			window.open(url, target)
 		},
 	},
 }

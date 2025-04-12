@@ -1,5 +1,5 @@
 <script setup>
-import { itemStore, effectStore, navigationStore } from '../../store/store.js'
+import { itemStore, effectStore, navigationStore, objectStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -149,10 +149,15 @@ export default {
 		fetchEffects() {
 			this.effectsLoading = true
 
-			effectStore.refreshEffectList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to effect type to fetch effects
+			objectStore.setObjectType('effect')
+			objectStore.refreshObjectList()
 				.then(() => {
 					const activeEffects = itemStore.itemItem?.id
-						? effectStore.effectList.filter((effect) => {
+						? objectStore.objectList.filter((effect) => {
 							return itemStore.itemItem.effects
 								.map(String)
 								.includes(effect.id.toString())
@@ -162,7 +167,7 @@ export default {
 					this.effects = {
 						multiple: true,
 						closeOnSelect: false,
-						options: effectStore.effectList.map((effect) => ({
+						options: objectStore.objectList.map((effect) => ({
 							id: effect.id,
 							label: effect.name,
 						})),
@@ -175,6 +180,9 @@ export default {
 					}
 
 					this.effectsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editItem() {

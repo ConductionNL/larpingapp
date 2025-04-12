@@ -1,5 +1,8 @@
 <script setup>
-import { eventStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import { eventStore, navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ eventStore.eventItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -32,27 +35,27 @@ import { eventStore, navigationStore } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ eventStore.eventItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ eventStore.eventItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 			</div>
-		<div class="tabContainer">
-			<BTabs content-class="mt-3" justified>
-				<BTab>
-					<template #title>
-						Characters <NcCounterBubble>{{ eventStore.relations ? eventStore.relations.length : 0 }}</NcCounterBubble>
-					</template>
-					<ObjectList :objects="eventStore.relations" />							
-				</BTab>
-				<BTab>
-					<template #title>
-						Logging <NcCounterBubble>{{ eventStore.auditTrails ? eventStore.auditTrails.length : 0 }}</NcCounterBubble>
-					</template>
-					<AuditList :logs="eventStore.auditTrails" />
-				</BTab>
-			</BTabs>
-		</div>
+			<div class="tabContainer">
+				<BTabs content-class="mt-3" justified>
+					<BTab>
+						<template #title>
+							Characters <NcCounterBubble>{{ objectStore.relations ? objectStore.relations.length : 0 }}</NcCounterBubble>
+						</template>
+						<ObjectList :objects="objectStore.relations" />							
+					</BTab>
+					<BTab>
+						<template #title>
+							Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
+						</template>
+						<AuditList :logs="objectStore.auditTrails" />
+					</BTab>
+				</BTabs>
+			</div>
 		</div>
 	</div>
 </template>

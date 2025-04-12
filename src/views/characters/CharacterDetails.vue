@@ -1,15 +1,56 @@
 <script setup>
-import { characterStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+import { BTabs, BTab } from 'bootstrap-vue'
+import { NcActions, NcActionButton, NcListItem, NcNoteCard, NcCounterBubble } from '@nextcloud/vue'
+import AuditList from '../auditTrail/AuditList.vue'
+import ObjectList from '../objects/ObjectList.vue'
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
+import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import EmoticonSickOutline from 'vue-material-design-icons/EmoticonSickOutline.vue'
+import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue'
+import Download from 'vue-material-design-icons/Download.vue'
+import AccountCheck from 'vue-material-design-icons/AccountCheck.vue'
+
+const objectStore = useObjectStore()
+
+/**
+ * Downloads the current character as a PDF
+ */
+function downloadCharacterPdf() {
+	const characterId = objectStore.objectItem.id
+	fetch(`characters/${characterId}/download`)
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok')
+			}
+			return response.blob()
+		})
+		.then(blob => {
+			const link = document.createElement('a')
+			link.href = window.URL.createObjectURL(blob)
+			link.download = `${objectStore.objectItem.name}_character_sheet.pdf`
+			link.click()
+			window.URL.revokeObjectURL(link.href)
+		})
+		.catch(error => {
+			console.error('Error downloading PDF:', error)
+			// Handle error (e.g., show error message to user)
+		})
+}
 </script>
 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
-			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ characterStore.characterItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -45,13 +86,13 @@ import { characterStore, navigationStore } from '../../store/store.js'
 							</template>
 							Events bewerken
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('renderPdfFromCharacter')">
+						<NcActionButton @click="downloadCharacterPdf">
 							<template #icon>
 								<Download :size="20" />
 							</template>
 							Als pdf downloaden
 						</NcActionButton>
-						<NcActionButton >
+						<NcActionButton>
 							<template #icon>
 								<AccountCheck :size="20" />
 							</template>
@@ -65,24 +106,24 @@ import { characterStore, navigationStore } from '../../store/store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
-				<NcNoteCard v-if="characterStore.characterItem.notice" type="info">
-					{{ characterStore.characterItem.notice }}
+				<NcNoteCard v-if="objectStore.objectItem.notice" type="info">
+					{{ objectStore.objectItem.notice }}
 				</NcNoteCard>
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ characterStore.characterItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ characterStore.characterItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab active>
 							<template #title>
-								Eigenschappen <NcCounterBubble>{{ characterStore.characterItem.stats ? Object.keys(characterStore.characterItem.stats).length : 0 }}</NcCounterBubble>
+								Eigenschappen <NcCounterBubble>{{ objectStore.objectItem.stats ? Object.keys(objectStore.objectItem.stats).length : 0 }}</NcCounterBubble>
 							</template>
-							<div v-if="characterStore.characterItem.stats">
-								<NcListItem v-for="(stat, id) in characterStore.characterItem.stats"
+							<div v-if="objectStore.objectItem.stats">
+								<NcListItem v-for="(stat, id) in objectStore.objectItem.stats"
 									:key="id"
 									:name="stat.name"
 									:bold="false">
@@ -101,49 +142,49 @@ import { characterStore, navigationStore } from '../../store/store.js'
 
 						<BTab>
 							<template #title>
-								Skills <NcCounterBubble>{{ characterStore.characterItem.skills ? characterStore.characterItem.skills.length : 0 }}</NcCounterBubble>
-							</template>							
-							<ObjectList :objects="characterStore.characterItem.skills" />
-						</BTab>
-
-						<BTab>
-							<template #title>
-								Items <NcCounterBubble>{{ characterStore.characterItem.items ? characterStore.characterItem.items.length : 0 }}</NcCounterBubble>
+								Skills <NcCounterBubble>{{ objectStore.objectItem.skills ? objectStore.objectItem.skills.length : 0 }}</NcCounterBubble>
 							</template>
-							<ObjectList :objects="characterStore.characterItem.items" />
+							<ObjectList :objects="objectStore.objectItem.skills" />
 						</BTab>
 
 						<BTab>
 							<template #title>
-								Conditions <NcCounterBubble>{{ characterStore.characterItem.conditions ? characterStore.characterItem.conditions.length : 0 }}</NcCounterBubble>
-							</template>							
-							<ObjectList :objects="characterStore.characterItem.conditions" />
-						</BTab>
-
-						<BTab>
-							<template #title>
-								Events <NcCounterBubble>{{ characterStore.characterItem.events ? characterStore.characterItem.events.length : 0 }}</NcCounterBubble>
+								Items <NcCounterBubble>{{ objectStore.objectItem.items ? objectStore.objectItem.items.length : 0 }}</NcCounterBubble>
 							</template>
-							<ObjectList :objects="characterStore.characterItem.events" />
+							<ObjectList :objects="objectStore.objectItem.items" />
 						</BTab>
 
 						<BTab>
 							<template #title>
-								Background <NcCounterBubble>{{ characterStore.characterItem.background ? 1 : 0 }}</NcCounterBubble>
+								Conditions <NcCounterBubble>{{ objectStore.objectItem.conditions ? objectStore.objectItem.conditions.length : 0 }}</NcCounterBubble>
 							</template>
-							<div v-if="characterStore.characterItem.background">
-								{{ characterStore.characterItem.background }}
+							<ObjectList :objects="objectStore.objectItem.conditions" />
+						</BTab>
+
+						<BTab>
+							<template #title>
+								Events <NcCounterBubble>{{ objectStore.objectItem.events ? objectStore.objectItem.events.length : 0 }}</NcCounterBubble>
+							</template>
+							<ObjectList :objects="objectStore.objectItem.events" />
+						</BTab>
+
+						<BTab>
+							<template #title>
+								Background <NcCounterBubble>{{ objectStore.objectItem.background ? 1 : 0 }}</NcCounterBubble>
+							</template>
+							<div v-if="objectStore.objectItem.background">
+								{{ objectStore.objectItem.background }}
 							</div>
 							<div v-else>
 								Geen achtergrond gevonden
 							</div>
 						</BTab>
-						
+
 						<BTab>
 							<template #title>
-								Logging <NcCounterBubble>{{ characterStore.auditTrails ? characterStore.auditTrails.length : 0 }}</NcCounterBubble>
+								Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
 							</template>
-							<AuditList :logs="characterStore.auditTrails" />
+							<AuditList :logs="objectStore.auditTrails" />
 						</BTab>
 					</BTabs>
 				</div>
@@ -152,93 +193,7 @@ import { characterStore, navigationStore } from '../../store/store.js'
 	</div>
 </template>
 
-<script>
-// Components
-import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcListItem, NcNoteCard, NcCounterBubble } from '@nextcloud/vue'
-
-// Custom components
-import AuditList from '../auditTrail/AuditList.vue'
-import ObjectList from '../objects/ObjectList.vue'
-
-// Icons
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
-import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
-import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
-import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
-import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
-import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
-import EyeArrowRight from 'vue-material-design-icons/EyeArrowRight.vue'
-import SwordCross from 'vue-material-design-icons/SwordCross.vue'
-import Sword from 'vue-material-design-icons/Sword.vue'
-import EmoticonSickOutline from 'vue-material-design-icons/EmoticonSickOutline.vue'
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
-import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue'
-import Download from 'vue-material-design-icons/Download.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
-import AccountCheck from 'vue-material-design-icons/AccountCheck.vue'
-
-export default {
-	name: 'CharacterDetails',
-	components: {
-		// Components
-		NcActions,
-		NcActionButton,
-		NcListItem,
-		NcNoteCard,
-		NcCounterBubble,
-		BTabs,
-		BTab,
-		// Custom components
-		AuditList,
-		ObjectList,
-		// Icons
-		DotsHorizontal,
-		Pencil,
-		AccountPlus,
-		CalendarPlus,
-		FileDocumentPlusOutline,
-		TrashCanOutline,
-		EyeArrowRight,
-		SwordCross,
-		Sword,
-		EmoticonSickOutline,
-		CalendarMonthOutline,
-		ShieldSwordOutline,
-		Download,
-		BriefcaseAccountOutline,
-		AccountCheck,
-
-	},
-	methods: {
-		downloadCharacterPdf() {
-			const characterId = characterStore.characterItem.id
-			fetch(`characters/${characterId}/download`)
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok')
-					}
-					return response.blob()
-				})
-				.then(blob => {
-					const link = document.createElement('a')
-					link.href = window.URL.createObjectURL(blob)
-					link.download = `${characterStore.characterItem.name}_character_sheet.pdf`
-					link.click()
-					window.URL.revokeObjectURL(link.href)
-				})
-				.catch(error => {
-					console.error('Error downloading PDF:', error)
-					// Handle error (e.g., show error message to user)
-				})
-		},
-	},
-}
-</script>
-
 <style>
-
 h4 {
   font-weight: bold;
 }
@@ -272,5 +227,4 @@ h4 {
 .nav-item .counter-bubble__counter {
     margin-left: 10px;
 }
-
 </style>

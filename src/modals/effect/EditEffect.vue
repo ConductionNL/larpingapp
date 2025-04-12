@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, effectStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -121,12 +124,12 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editEffect' && !this.hasUpdated) {
-			if (effectStore.effectItem.id) {
+			if (objectStore.objectItem?.id) {
 				this.effectItem = {
-					...effectStore.effectItem,
-					name: effectStore.effectItem.name || '',
-					description: effectStore.effectItem.description || '',
-					modifier: effectStore.effectItem.modifier || '',
+					...objectStore.objectItem,
+					name: objectStore.objectItem.name || '',
+					description: objectStore.objectItem.description || '',
+					modifier: objectStore.objectItem.modifier || '',
 				}
 			}
 			this.fetchAbilities()
@@ -149,38 +152,46 @@ export default {
 		fetchAbilities() {
 			this.abilitiesLoading = true
 
-			abilityStore.refreshAbilityList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to ability type to fetch abilities
+			objectStore.setObjectType('ability')
+			objectStore.refreshObjectList()
 				.then(() => {
-					const selectedAbilities = effectStore.effectItem.id // if modal is an edit modal
-						? abilityStore.abilityList.filter((ability) => { // filter through the list of abilities
-							return (effectStore.effectItem.abilities || []) // ensure abilities exists or default to empty array
-								.map(String) // ensure all the ability id's in the effect are a string (this does not change the resulting data type)
-								.includes(ability.id.toString()) // check if the current ability in the filter exists on the effects's abilities
+					const selectedAbilities = objectStore.objectItem?.id // if modal is an edit modal
+						? objectStore.objectList.filter((ability) => { // filter through the list of abilities
+							return (objectStore.objectItem.abilities || []) // ensure abilities exists or default to empty array
+								.map(String) // ensure all the ability id's in the effect are a string
+								.includes(ability.id.toString()) // check if the current ability exists in the effect's abilities
 						})
 						: null
 
 					this.abilities = {
 						multiple: true,
 						closeOnSelect: false,
-						options: abilityStore.abilityList.map((ability) => ({
+						options: objectStore.objectList.map((ability) => ({
 							id: ability.id,
 							label: ability.name,
 						})),
 						value: selectedAbilities
 							? selectedAbilities.map((ability) => ({
 								id: ability.id,
-							    label: ability.name,
+								label: ability.name,
 							}))
 							: null,
 					}
 
 					this.abilitiesLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editEffect() {
 			this.loading = true
 			try {
-				await effectStore.saveEffect({
+				await objectStore.saveObject({
 					...this.effectItem,
 					modification: this.modificationOptions.value.id,
 					cumulative: this.cumulativeOptions.value.id,

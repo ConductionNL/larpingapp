@@ -1,5 +1,26 @@
 <script setup>
-import { characterStore, navigationStore, searchStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore, searchStore } from '../../store/store.js'
+import { onMounted } from 'vue'
+
+const objectStore = useObjectStore()
+const EXTENSION_PARAMS = { _extend: 'ocName,skills,items,conditions,events' }
+
+// Set the object type to 'character' and load the list
+onMounted(() => {
+	objectStore.setObjectType('character')
+	refreshCharacterList()
+})
+
+// Function to handle refresh with additional parameters
+async function refreshCharacterList() {
+	await objectStore.refreshObjectList('character', EXTENSION_PARAMS)
+}
+
+// Handle character selection
+async function handleCharacterSelect(character) {
+	await objectStore.setObjectItem(character)
+}
 </script>
 
 <template>
@@ -7,23 +28,23 @@ import { characterStore, navigationStore, searchStore } from '../../store/store.
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value="characterStore.searchTerm"
-					:show-trailing-button="characterStore.searchTerm !== ''"
+					:value="objectStore.searchTerm"
+					:show-trailing-button="objectStore.searchTerm !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@input="characterStore.setSearchTerm($event.target.value)"
-					@trailing-button-click="characterStore.clearSearch()">
+					@input="objectStore.setSearchTerm($event.target.value)"
+					@trailing-button-click="objectStore.clearSearch()">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="characterStore.refreshCharacterList()">
+					<NcActionButton @click="refreshCharacterList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="characterStore.setCharacterItem(null); navigationStore.setModal('editCharacter')">
+					<NcActionButton @click="objectStore.setObjectItem(null); navigationStore.setModal('editCharacter')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -32,17 +53,17 @@ import { characterStore, navigationStore, searchStore } from '../../store/store.
 				</NcActions>
 			</div>
 
-			<div v-if="characterStore.characterList && characterStore.characterList.length > 0 && !characterStore.isLoadingCharacterList">
-				<NcListItem v-for="(character, i) in characterStore.characterList"
+			<div v-if="objectStore.objectList && objectStore.objectList.length > 0 && !objectStore.isLoadingObjectList">
+				<NcListItem v-for="(character, i) in objectStore.objectList"
 					:key="`${character}${i}`"
 					:name="character?.name"
 					:force-display-actions="true"
-					:active="characterStore.characterItem?.id === character?.id"
+					:active="objectStore.objectItem?.id === character?.id"
 					:details="character.approved === 'approved' ? 'Approved': 'Not approved'"
 					:counter-number="character?.skills?.length || 0"
 					@click="handleCharacterSelect(character)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="characterStore.characterItem?.id === character?.id && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="objectStore.objectItem?.id === character?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -50,13 +71,13 @@ import { characterStore, navigationStore, searchStore } from '../../store/store.
 						{{ character?.ocName?.name || 'No player selected' }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setModal('editCharacter')">
+						<NcActionButton @click="objectStore.setObjectItem(character); navigationStore.setModal('editCharacter')">
 							<template #icon>
 								<Pencil />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="characterStore.setCharacterItem(character); navigationStore.setDialog('deleteCharacter')">
+						<NcActionButton @click="objectStore.setObjectItem(character); navigationStore.setDialog('deleteCharacter')">
 							<template #icon>
 								<TrashCanOutline />
 							</template>
@@ -67,13 +88,13 @@ import { characterStore, navigationStore, searchStore } from '../../store/store.
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="characterStore.isLoadingCharacterList"
+		<NcLoadingIcon v-if="objectStore.isLoadingObjectList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Karakters aan het laden" />
 
-		<div v-if="characterStore.characterList.length === 0 && !characterStore.isLoadingCharacterList">
+		<div v-if="objectStore.objectList.length === 0 && !objectStore.isLoadingObjectList">
 			Er zijn nog geen karakters gedefinieerd.
 		</div>
 	</NcAppContentList>
@@ -108,20 +129,7 @@ export default {
 		Plus,
 		Pencil,
 		TrashCanOutline,
-	},
-	mounted() {
-		characterStore.refreshCharacterList()
-	},
-	methods: {
-		/**
-		 * Handle character selection
-		 * @param {object} character - The selected character object
-		 */
-		async handleCharacterSelect(character) {
-			// Set the selected character in the store
-			characterStore.setCharacterItem(character)
-		},
-	},
+	}
 }
 </script>
 

@@ -1,47 +1,51 @@
 <script setup>
-import { characterStore, itemStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'addItemToCharacter'"
-		name="Voorwerpen bewerken"
+		name="Items toevoegen"
 		size="normal"
-		:can-close="false">
+		:can-close="false"
+		@close="closeModal">
 		<NcNoteCard v-if="success" type="success">
-			<p>Voorwerpen succesvol bijgewerkt</p>
+			<p>Items succesvol toegevoegd</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
 
 		<div v-if="!success" class="formContainer">
-			<p>Let op: Het bewerken van voorwerpen kan invloed hebben op de eigenschappen van het karakter. Dit is een asynchroon proces, dus het kan even duren voordat de wijzigingen zichtbaar worden.</p>
-
 			<NcSelect v-bind="items"
 				v-model="selectedItems"
-				input-label="Voorwerpen *"
+				input-label="Items *"
 				:loading="itemsLoading"
-				:disabled="itemsLoading"
-				required />
+				:disabled="itemsLoading || loading" />
 		</div>
 
 		<template #actions>
-			<NcButton @click="closeModal">
+			<NcButton
+				@click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ success ? 'Sluiten' : 'Annuleer' }}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
-				:disabled="loading || itemsLoading"
+			<NcButton
+				v-if="!success"
+				:disabled="loading"
 				type="primary"
-				@click="saveItems()">
+				@click="addItemsToCharacter()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Save v-if="!loading" :size="20" />
@@ -62,7 +66,7 @@ import {
 } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Save from 'vue-material-design-icons/ContentSave.vue'
+import Save from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
@@ -107,41 +111,63 @@ export default {
 			this.hasUpdated = false
 			this.selectedItems = []
 		},
-		fetchItems() {
+		async fetchItems() {
 			this.itemsLoading = true
 
-			itemStore.refreshItemList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to item type to fetch items
+			objectStore.setObjectType('item')
+			await objectStore.refreshObjectList()
 				.then(() => {
 					// Create options from all available items
 					this.items = {
 						multiple: true,
 						closeOnSelect: false,
-						options: itemStore.itemList.map((item) => ({
+						options: objectStore.objectList.map((item) => ({
 							id: item.id,
 							label: item.name,
 						})),
 					}
 
 					// Pre-select existing items
-					if (characterStore.characterItem?.items?.length) {
-						this.selectedItems = characterStore.characterItem.items.map(item => ({
+					if (objectStore.objectItem?.items?.length) {
+						this.selectedItems = objectStore.objectItem.items.map(item => ({
 							id: item.id || item,
-							label: itemStore.itemList.find(i => i.id === (item.id || item))?.name || '',
+							label: objectStore.objectList.find(i => i.id === (item.id || item))?.name || '',
 						}))
 					}
 
 					this.itemsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
+				})
+				.catch((error) => {
+					console.error('Error fetching items:', error)
+					this.itemsLoading = false
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
-		async saveItems() {
+		async addItemsToCharacter() {
 			this.loading = true
 			try {
-				const characterItemClone = { ...characterStore.characterItem }
+				const characterItemClone = { ...objectStore.objectItem }
 				
 				// Replace items array with selected items, ensuring uniqueness
 				const uniqueItems = [...new Map(this.selectedItems.map(item => [item.id, item])).values()]
+				
+				// Store current object type
+				const currentType = objectStore.objectType
+				
+				// Switch to item type to fetch full item data
+				objectStore.setObjectType('item')
+				await objectStore.refreshObjectList()
+				
 				characterItemClone.items = uniqueItems.map(selected => {
-					const itemData = itemStore.itemList.find(i => i.id === selected.id)
+					const itemData = objectStore.objectList.find(i => i.id === selected.id)
 					return {
 						objectType: 'item',
 						id: itemData.id,
@@ -151,7 +177,9 @@ export default {
 					}
 				})
 
-				await characterStore.saveCharacter(characterItemClone)
+				// Switch back to character type for saving
+				objectStore.setObjectType('character')
+				await objectStore.saveObject(characterItemClone)
 
 				this.success = true
 				this.loading = false
@@ -164,6 +192,9 @@ export default {
 				this.success = false
 				this.error = error.message || 'Er is een fout opgetreden bij het bewerken van de voorwerpen'
 			}
+		},
+		openLink(url, target) {
+			window.open(url, target)
 		},
 	},
 }

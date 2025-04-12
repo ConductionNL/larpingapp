@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ abilityStore.abilityItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -33,24 +36,24 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ abilityStore.abilityItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ abilityStore.abilityItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab>
 							<template #title>
-								Effects <NcCounterBubble>{{ abilityStore.relations ? abilityStore.relations.length : 0 }}</NcCounterBubble>
+								Effects <NcCounterBubble>{{ objectStore.relations ? objectStore.relations.length : 0 }}</NcCounterBubble>
 							</template>
-							<ObjectList :objects="abilityStore.relations" />							
+							<ObjectList :objects="objectStore.relations" />							
 						</BTab>
 						<BTab>
 							<template #title>
-								Logging <NcCounterBubble>{{ abilityStore.auditTrails ? abilityStore.auditTrails.length : 0 }}</NcCounterBubble>
+								Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
 							</template>
-							<AuditList :logs="abilityStore.auditTrails" />
+							<AuditList :logs="objectStore.auditTrails" />
 						</BTab>
 					</BTabs>
 				</div>
@@ -72,7 +75,7 @@ import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
-import { storeToRefs } from 'pinia'
+
 export default {
 	name: 'AbilityDetails',
 	components: {

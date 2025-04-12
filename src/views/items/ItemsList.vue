@@ -1,5 +1,8 @@
 <script setup>
-import { itemStore, navigationStore, searchStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -7,23 +10,23 @@ import { itemStore, navigationStore, searchStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value="itemStore.searchTerm"
-					:show-trailing-button="itemStore.searchTerm !== ''"
+					:value="objectStore.searchTerm"
+					:show-trailing-button="objectStore.searchTerm !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@input="itemStore.setSearchTerm($event.target.value)"
-					@trailing-button-click="itemStore.clearSearch()">
+					@input="objectStore.setSearchTerm($event.target.value)"
+					@trailing-button-click="objectStore.clearSearch()">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="itemStore.refreshItemList()">
+					<NcActionButton @click="objectStore.refreshObjectList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="itemStore.setItemItem(null); navigationStore.setModal('editItem')">
+					<NcActionButton @click="objectStore.setObjectItem(null); navigationStore.setModal('editItem')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -32,16 +35,16 @@ import { itemStore, navigationStore, searchStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="itemStore.itemList && itemStore.itemList.length > 0 && !itemStore.isLoadingItemList">
-				<NcListItem v-for="(item, i) in itemStore.itemList"
+			<div v-if="objectStore.objectList && objectStore.objectList.length > 0 && !objectStore.isLoadingObjectList">
+				<NcListItem v-for="(item, i) in objectStore.objectList"
 					:key="`${item}${i}`"
 					:name="item?.name"
-					:active="itemStore.itemItem?.id === item?.id"
+					:active="objectStore.objectItem?.id === item?.id"
 					:details="item.unique ? 'unique' : 'non-unique'"
 					:force-display-actions="true"
-					@click="handleItemSelect(item)">
+					@click="objectStore.setObjectItem(item)">
 					<template #icon>
-						<Sword :class="itemStore.itemItem?.id === item?.id && 'selectedItemIcon'"
+						<Sword :class="objectStore.objectItem?.id === item?.id && 'selectedItemIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -49,13 +52,13 @@ import { itemStore, navigationStore, searchStore } from '../../store/store.js'
 						{{ item?.description }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="itemStore.setItemItem(item); navigationStore.setModal('editItem')">
+						<NcActionButton @click="objectStore.setObjectItem(item); navigationStore.setModal('editItem')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="itemStore.setItemItem(item); navigationStore.setDialog('deleteItem')">
+						<NcActionButton @click="objectStore.setObjectItem(item); navigationStore.setDialog('deleteItem')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -66,13 +69,13 @@ import { itemStore, navigationStore, searchStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="itemStore.isLoadingItemList"
+		<NcLoadingIcon v-if="objectStore.isLoadingObjectList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Items aan het laden" />
 
-		<div v-if="itemStore.itemList.length === 0 && !itemStore.isLoadingItemList">
+		<div v-if="objectStore.objectList.length === 0 && !objectStore.isLoadingObjectList">
 			Er zijn nog geen items gedefinieerd.
 		</div>
 	</NcAppContentList>
@@ -108,17 +111,7 @@ export default {
 		TrashCanOutline,
 	},
 	mounted() {
-		itemStore.refreshItemList()
-	},
-	methods: {
-		/**
-		 * Handle item selection and fetch related data
-		 * @param {Object} item - The selected item object
-		 */
-		async handleItemSelect(item) {
-			// Set the selected item in the store
-			itemStore.setItemItem(item)
-		},
+		objectStore.refreshObjectList()
 	},
 }
 </script>

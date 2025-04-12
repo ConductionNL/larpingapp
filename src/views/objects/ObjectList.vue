@@ -1,5 +1,5 @@
 <script setup>
-import { effectStore, abilityStore, skillStore, itemStore, eventStore, conditionStore, characterStore, playerStore, navigationStore } from '../../store/store.js'
+import { navigationStore, objectStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -10,6 +10,7 @@ import { effectStore, abilityStore, skillStore, itemStore, eventStore, condition
 				:name="object.name"
 				:bold="false"
 				:details="object.objectType"
+
 				:force-display-actions="true"
 				@click="handleObjectClick(object)">
 				<template #icon>
@@ -41,11 +42,11 @@ import { effectStore, abilityStore, skillStore, itemStore, eventStore, condition
 		</div>
 		<div v-else>
 			Geen relaties gevonden
-		</div>		
+		</div>
 	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton } from '@nextcloud/vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import ShieldSwordOutline from 'vue-material-design-icons/ShieldSwordOutline.vue'
@@ -63,7 +64,6 @@ export default {
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcLoadingIcon,
 		// Icons
 		TimelineQuestionOutline,
 		Eye,
@@ -75,7 +75,7 @@ export default {
 		Sword,
 		SwordCross,
 		Account,
-		ChatOutline
+		ChatOutline,
 	},
 	props: {
 		objects: {
@@ -87,14 +87,23 @@ export default {
 	methods: {
 		/**
 		 * Renders effects and effect property for an object
-		 * @param {Object} object - The object containing effects and effect property
-		 * @returns {string} Formatted string of effects
+		 * @param {object} object - The object containing effects and effect property
+		 * @return {string} Formatted string of effects
 		 */
 		renderEffects(object) {
 			if (!object?.effects?.length) return 'No calculated effects'
 
 			const effectStrings = object.effects.map(effectId => {
-				const effect = effectStore.effectList.find(e => e.id === effectId)
+				// Store current object type
+				const currentType = objectStore.objectType
+
+				// Switch to effect type to get effect details
+				objectStore.setObjectType('effect')
+				const effect = objectStore.objectList.find(e => e.id === effectId)
+
+				// Restore previous object type
+				objectStore.setObjectType(currentType)
+
 				if (!effect?.abilities?.length) return null
 
 				return effect.abilities.map(ability => {
@@ -108,46 +117,13 @@ export default {
 		},
 		/**
 		 * Handles click on an object list item
-		 * @param {Object} object - The clicked object
+		 * @param {object} object - The clicked object
 		 */
 		handleObjectClick(object) {
-			// Set the object in the appropriate store
-			switch (object.objectType) {
-				case 'ability':
-					abilityStore.abilityItem = object
-					navigationStore.setSelected('abilities')
-					break
-				case 'skill':
-					skillStore.skillItem = object
-					navigationStore.setSelected('skills')
-					break
-				case 'item':
-					itemStore.itemItem = object
-					navigationStore.setSelected('items')
-					break
-				case 'event':
-					eventStore.eventItem = object
-					navigationStore.setSelected('events')
-					break
-				case 'condition':
-					conditionStore.conditionItem = object
-					navigationStore.setSelected('conditions')
-					break
-				case 'effect':
-					effectStore.effectItem = object
-					navigationStore.setSelected('effects')
-					break
-				case 'character':
-					characterStore.characterItem = object
-					navigationStore.setSelected('characters')
-					break
-				case 'player':
-					playerStore.playerItem = object
-					navigationStore.setSelected('players')
-					break
-				default:
-					console.warn('Unknown object type:', object.objectType)
-			}
+			// Set the object type and item in the object store
+			objectStore.setObjectType(object.objectType)
+			objectStore.setObjectItem(object)
+			navigationStore.setSelected(object.objectType + 's')
 		},
 	},
 }

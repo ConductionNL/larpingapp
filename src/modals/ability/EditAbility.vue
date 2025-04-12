@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -47,10 +50,10 @@ import { abilityStore, navigationStore } from '../../store/store.js'
 				@click="editAbility()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && abilityStore.abilityItem?.id" :size="20" />
-					<Plus v-if="!loading && !abilityStore.abilityItem?.id" :size="20" />
+					<ContentSaveOutline v-if="!loading && objectStore.objectItem?.id" :size="20" />
+					<Plus v-if="!loading && !objectStore.objectItem?.id" :size="20" />
 				</template>
-				{{ abilityStore.abilityItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ objectStore.objectItem?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -99,12 +102,12 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editAbility' && !this.hasUpdated) {
-			if (abilityStore.abilityItem?.id) {
+			if (objectStore.objectItem?.id) {
 				this.abilityItem = {
-					...abilityStore.abilityItem,
-					name: abilityStore.abilityItem.name || '',
-					description: abilityStore.abilityItem.description || '',
-					base: abilityStore.abilityItem.base || '',
+					...objectStore.objectItem,
+					name: objectStore.objectItem.name || '',
+					description: objectStore.objectItem.description || '',
+					base: objectStore.objectItem.base || '',
 				}
 			}
 			this.hasUpdated = true
@@ -127,7 +130,7 @@ export default {
 		async editAbility() {
 			this.loading = true
 			try {
-				await abilityStore.saveAbility({
+				await objectStore.saveObject({
 					...this.abilityItem,
 				})
 				this.success = true

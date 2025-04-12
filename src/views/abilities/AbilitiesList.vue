@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, navigationStore, searchStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -7,23 +10,23 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
         <ul>
             <div class="listHeader">
                 <NcTextField
-                    :value="abilityStore.searchTerm"
-                    :show-trailing-button="abilityStore.searchTerm !== ''"
+                    :value="objectStore.searchTerm"
+                    :show-trailing-button="objectStore.searchTerm !== ''"
                     label="Search"
                     class="searchField"
                     trailing-button-icon="close"
-                    @input="abilityStore.setSearchTerm($event.target.value)"
-                    @trailing-button-click="abilityStore.clearSearch()">
+                    @input="objectStore.setSearchTerm($event.target.value)"
+                    @trailing-button-click="objectStore.clearSearch()">
                     <Magnify :size="20" />
                 </NcTextField>
                 <NcActions>
-                    <NcActionButton @click="abilityStore.refreshAbilityList()">
+                    <NcActionButton @click="objectStore.refreshObjectList()">
                         <template #icon>
                             <Refresh :size="20" />
                         </template>
                         Ververs
                     </NcActionButton>
-                    <NcActionButton @click="abilityStore.setAbilityItem(null); navigationStore.setModal('editAbility')">
+                    <NcActionButton @click="objectStore.setObjectItem(null); navigationStore.setModal('editAbility')">
                         <template #icon>
                             <Plus :size="20" />
                         </template>
@@ -32,15 +35,15 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
                 </NcActions>
             </div>
 
-            <div v-if="abilityStore.abilityList && abilityStore.abilityList.length > 0 && !abilityStore.isLoadingAbilityList">
-                <NcListItem v-for="(ability, i) in abilityStore.abilityList"
+            <div v-if="objectStore.objectList && objectStore.objectList.length > 0 && !objectStore.isLoadingObjectList">
+                <NcListItem v-for="(ability, i) in objectStore.objectList"
                     :key="`${ability}${i}`"
                     :name="ability?.name"
                     :force-display-actions="true"
-                    :active="abilityStore.abilityItem?.id === ability?.id"
-                    @click="abilityStore.setAbilityItem(ability)">
+                    :active="objectStore.objectItem?.id === ability?.id"
+                    @click="objectStore.setObjectItem(ability)">
                     <template #icon>
-                        <AccountGroup :class="abilityStore.abilityItem?.id === ability?.id && 'selectedIcon'"
+                        <AccountGroup :class="objectStore.objectItem?.id === ability?.id && 'selectedIcon'"
                             disable-menu
                             :size="44" />
                     </template>
@@ -48,13 +51,13 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
                         {{ ability?.description || 'Geen beschrijving' }}
                     </template>
                     <template #actions>
-                        <NcActionButton @click="abilityStore.setAbilityItem(ability); navigationStore.setModal('editAbility')">
+                        <NcActionButton @click="objectStore.setObjectItem(ability); navigationStore.setModal('editAbility')">
                             <template #icon>
                                 <Pencil />
                             </template>
                             Bewerken
                         </NcActionButton>
-                        <NcActionButton @click="abilityStore.setAbilityItem(ability); navigationStore.setDialog('deleteAbility')">
+                        <NcActionButton @click="objectStore.setObjectItem(ability); navigationStore.setDialog('deleteAbility')">
                             <template #icon>
                                 <TrashCanOutline />
                             </template>
@@ -65,13 +68,13 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
             </div>
         </ul>
 
-        <NcLoadingIcon v-if="abilityStore.isLoadingAbilityList"
+        <NcLoadingIcon v-if="objectStore.isLoadingObjectList"
             class="loadingIcon"
             :size="64"
             appearance="dark"
             name="Vaardigheden aan het laden" />
 
-        <div v-if="abilityStore.abilityList.length === 0 && !abilityStore.isLoadingAbilityList">
+        <div v-if="objectStore.objectList.length === 0 && !objectStore.isLoadingObjectList">
             Er zijn nog geen vaardigheden gedefinieerd.
         </div>
     </NcAppContentList>
@@ -79,7 +82,6 @@ import { abilityStore, navigationStore, searchStore } from '../../store/store.js
 
 <script>
 import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-import { abilityStore, navigationStore } from '../../store/store.js'
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -104,7 +106,7 @@ export default {
         AccountGroup,
     },
     mounted() {
-        abilityStore.refreshAbilityList()
+        objectStore.refreshObjectList()
     },
 }
 </script>

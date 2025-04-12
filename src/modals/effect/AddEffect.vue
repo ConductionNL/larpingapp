@@ -1,5 +1,8 @@
 <script setup>
-import { abilityStore, effectStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -141,24 +144,34 @@ export default {
 		fetchAbilities() {
 			this.abilitiesLoading = true
 
-			abilityStore.refreshAbilityList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to ability type to fetch abilities
+			objectStore.setObjectType('ability')
+			objectStore.refreshObjectList()
 				.then(() => {
 					this.abilities = {
 						multiple: true,
 						closeOnSelect: false,
-						options: abilityStore.abilityList.map((ability) => ({
+						options: objectStore.objectList.map((ability) => ({
 							id: ability.id,
 							label: ability.name,
 						})),
 					}
 
 					this.abilitiesLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editEffect() {
 			this.loading = true
 			try {
-				await effectStore.saveEffect({
+				// Set object type to effect before saving
+				objectStore.setObjectType('effect')
+				await objectStore.saveObject({
 					...this.effectItem,
 					modification: this.modificationOptions.value.id,
 					cumulative: this.cumulativeOptions.value.id,

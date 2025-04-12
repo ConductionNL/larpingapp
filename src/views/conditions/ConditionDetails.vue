@@ -1,5 +1,8 @@
 <script setup>
-import { conditionStore, navigationStore,  } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import { conditionStore, navigationStore,  } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ conditionStore.conditionItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -32,18 +35,18 @@ import { conditionStore, navigationStore,  } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ conditionStore.conditionItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ conditionStore.conditionItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab>
 							<template #title>
-								Effects <NcCounterBubble>{{ conditionStore.conditionItem?.effects?.length || 0 }}</NcCounterBubble>
+								Effects <NcCounterBubble>{{ objectStore.objectItem?.effects?.length || 0 }}</NcCounterBubble>
 							</template>
-							<div v-if="conditionStore.conditionItem?.effects?.length > 0">
-								<NcListItem v-for="(effect) in conditionStore.conditionItem.effects"
+							<div v-if="objectStore.objectItem?.effects?.length > 0">
+								<NcListItem v-for="(effect) in objectStore.objectItem.effects"
 									:key="effect.id"
 									:name="effect.name"
 									:bold="false"
@@ -65,15 +68,15 @@ import { conditionStore, navigationStore,  } from '../../store/store.js'
 						</BTab>
 						<BTab>
 							<template #title>
-								Characters <NcCounterBubble>{{ conditionStore.relations ? conditionStore.relations.length : 0 }}</NcCounterBubble>
+								Characters <NcCounterBubble>{{ objectStore.relations ? objectStore.relations.length : 0 }}</NcCounterBubble>
 							</template>
-							<ObjectList :objects="conditionStore.relations" />							
+							<ObjectList :objects="objectStore.relations" />							
 						</BTab>
 						<BTab>
 							<template #title>
-								Logging <NcCounterBubble>{{ conditionStore.auditTrails ? conditionStore.auditTrails.length : 0 }}</NcCounterBubble>
+								Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
 							</template>
-							<AuditList :logs="conditionStore.auditTrails" />
+							<AuditList :logs="objectStore.auditTrails" />
 						</BTab>
 					</BTabs>
 				</div>
@@ -94,28 +97,26 @@ import ObjectList from '../objects/ObjectList.vue'
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
-import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
+import MagicStaff from 'vue-material-design-icons/MagicStaff.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ConditionDetails',
 	components: {
-		AuditList,
-		ObjectList,
-		NcActions,
-		NcActionButton,
-		NcLoadingIcon,
-		NcListItem,
-		NcCounterBubble,
 		BTabs,
 		BTab,
+		NcLoadingIcon,
+		NcActions,
+		NcActionButton,
+		NcListItem,
+		NcCounterBubble,
+		AuditList,
+		ObjectList,
 		// Icons
 		DotsHorizontal,
 		Pencil,
-		FileDocumentPlusOutline,
+		MagicStaff,
 		TrashCanOutline,
-		BriefcaseAccountOutline,
 	},
 }
 </script>

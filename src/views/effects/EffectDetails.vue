@@ -1,5 +1,8 @@
 <script setup>
-import { effectStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import { effectStore, navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ effectStore.effectItem.name }}
+						{{ objectStore.objectItem.name }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -33,24 +36,24 @@ import { effectStore, navigationStore } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Sammenvatting:</b>
-						<span>{{ effectStore.effectItem.summary }}</span>
+						<span>{{ objectStore.objectItem.summary }}</span>
 					</div>
 				</div>
-				<span>{{ effectStore.effectItem.description }}</span>
+				<span>{{ objectStore.objectItem.description }}</span>
 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>		
 						<BTab>
 							<template #title>
-								Used by <NcCounterBubble>{{ effectStore.relations ? effectStore.relations.length : 0 }}</NcCounterBubble>
+								Used by <NcCounterBubble>{{ objectStore.relations ? objectStore.relations.length : 0 }}</NcCounterBubble>
 							</template>
-							<ObjectList :objects="effectStore.relations" />							
+							<ObjectList :objects="objectStore.relations" />							
 						</BTab>
 						<BTab>
 							<template #title>
-								Logging <NcCounterBubble>{{ effectStore.auditTrails ? effectStore.auditTrails.length : 0 }}</NcCounterBubble>
+								Logging <NcCounterBubble>{{ objectStore.auditTrails ? objectStore.auditTrails.length : 0 }}</NcCounterBubble>
 							</template>
-							<AuditList :logs="effectStore.auditTrails" />
+							<AuditList :logs="objectStore.auditTrails" />
 						</BTab>
 					</BTabs>
 				</div>

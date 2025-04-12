@@ -1,5 +1,8 @@
 <script setup>
-import { eventStore, effectStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -69,10 +72,10 @@ import { eventStore, effectStore, navigationStore } from '../../store/store.js'
 				@click="editEvent()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && eventStore.eventItem?.id" :size="20" />
-					<Plus v-if="!loading && !eventStore.eventItem?.id" :size="20" />
+					<ContentSaveOutline v-if="!loading && objectStore.objectItem?.id" :size="20" />
+					<Plus v-if="!loading && !objectStore.objectItem?.id" :size="20" />
 				</template>
-				{{ eventStore.eventItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ objectStore.objectItem?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -117,6 +120,7 @@ export default {
 				endDate: new Date(),
 				location: '',
 			},
+			hasUpdated: false,
 		}
 	},
 	mounted() {
@@ -124,18 +128,18 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editEvent' && !this.hasUpdated) {
-			if (eventStore.eventItem?.id) {
+			if (objectStore.objectItem?.id) {
 				this.eventItem = {
-					...eventStore.eventItem,
-					name: eventStore.eventItem.name || '',
-					description: eventStore.eventItem.description || '',
-					startDate: !isNaN(new Date(eventStore.eventItem.startDate))
-						? new Date(eventStore.eventItem.startDate)
+					...objectStore.objectItem,
+					name: objectStore.objectItem.name || '',
+					description: objectStore.objectItem.description || '',
+					startDate: !isNaN(new Date(objectStore.objectItem.startDate))
+						? new Date(objectStore.objectItem.startDate)
 						: new Date(),
-					endDate: !isNaN(new Date(eventStore.eventItem.endDate))
-						? new Date(eventStore.eventItem.endDate)
+					endDate: !isNaN(new Date(objectStore.objectItem.endDate))
+						? new Date(objectStore.objectItem.endDate)
 						: new Date(),
-					location: eventStore.eventItem.location || '',
+					location: objectStore.objectItem.location || '',
 				}
 			}
 			this.fetchEffects()
@@ -160,11 +164,16 @@ export default {
 		fetchEffects() {
 			this.effectsLoading = true
 
-			effectStore.refreshEffectList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to effect type to fetch effects
+			objectStore.setObjectType('effect')
+			objectStore.refreshObjectList()
 				.then(() => {
-					const activeEffects = eventStore.eventItem?.id
-						? effectStore.effectList.filter((effect) => {
-							return eventStore.eventItem.effects
+					const activeEffects = objectStore.objectItem?.id
+						? objectStore.objectList.filter((effect) => {
+							return objectStore.objectItem.effects
 								.map(String)
 								.includes(effect.id.toString())
 						})
@@ -173,25 +182,30 @@ export default {
 					this.effects = {
 						multiple: true,
 						closeOnSelect: false,
-						options: effectStore.effectList.map((effect) => ({
+						options: objectStore.objectList.map((effect) => ({
 							id: effect.id,
 							label: effect.name,
 						})),
 						value: activeEffects
 							? activeEffects.map((effect) => ({
 								id: effect.id,
-							    label: effect.name,
+								label: effect.name,
 							}))
 							: null,
 					}
 
 					this.effectsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editEvent() {
 			this.loading = true
 			try {
-				await eventStore.saveEvent({
+				// Set object type to event before saving
+				objectStore.setObjectType('event')
+				await objectStore.saveObject({
 					...this.eventItem,
 					effects: (this.effects?.value || []).map((effect) => effect.id),
 					startDate: this.eventItem.startDate.toISOString(),
@@ -214,6 +228,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .eventDateContainer {
 	display: flex;

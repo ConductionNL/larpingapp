@@ -1,5 +1,8 @@
 <script setup>
-import { conditionStore, navigationStore, effectStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -90,11 +93,11 @@ export default {
 		this.fetchEffects()
 	},
 	updated() {
-		if (conditionStore.conditionItem?.id && navigationStore.modal === 'editCondition' && !this.hasUpdated) {
+		if (objectStore.objectItem?.id && navigationStore.modal === 'editCondition' && !this.hasUpdated) {
 			this.conditionItem = {
-				...conditionStore.conditionItem,
-				name: conditionStore.conditionItem.name || '',
-				description: conditionStore.conditionItem.description || '',
+				...objectStore.objectItem,
+				name: objectStore.objectItem.name || '',
+				description: objectStore.objectItem.description || '',
 			}
 			this.fetchEffects()
 			this.hasUpdated = true
@@ -115,11 +118,16 @@ export default {
 		fetchEffects() {
 			this.effectsLoading = true
 
-			effectStore.refreshEffectList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to effect type to fetch effects
+			objectStore.setObjectType('effect')
+			objectStore.refreshObjectList()
 				.then(() => {
-					const activeEffects = conditionStore.conditionItem?.id
-						? effectStore.effectList.filter((effect) => {
-							return conditionStore.conditionItem.effects
+					const activeEffects = objectStore.objectItem?.id
+						? objectStore.objectList.filter((effect) => {
+							return objectStore.objectItem.effects
 								?.map(String)
 								.includes(effect.id.toString())
 						})
@@ -128,7 +136,7 @@ export default {
 					this.effects = {
 						multiple: true,
 						closeOnSelect: false,
-						options: effectStore.effectList.map((effect) => ({
+						options: objectStore.objectList.map((effect) => ({
 							id: effect.id,
 							label: effect.name,
 						})),
@@ -141,12 +149,17 @@ export default {
 					}
 
 					this.effectsLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 		async editCondition() {
 			this.loading = true
 			try {
-				await conditionStore.saveCondition({
+				// Set object type to condition before saving
+				objectStore.setObjectType('condition')
+				await objectStore.saveObject({
 					...this.conditionItem,
 					effects: (this.effects?.value || []).map((effect) => effect.id),
 				})
@@ -157,7 +170,7 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.succes = false
-				this.error = error.message || 'An error occurred while saving the character'
+				this.error = error.message || 'An error occurred while saving the condition'
 			}
 		},
 	},

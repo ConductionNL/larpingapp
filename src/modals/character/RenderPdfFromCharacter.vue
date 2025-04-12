@@ -1,49 +1,52 @@
 <script setup>
-import { characterStore, navigationStore, templateStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'renderPdfFromCharacter'"
-		name="PDF downloaden"
+		name="PDF genereren"
 		size="normal"
-		:can-close="false">
+		:can-close="false"
+		@close="closeModal">
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
 
 		<div class="formContainer">
-			<p>Selecteer een template om een PDF te genereren van dit karakter.</p>
-
 			<NcSelect v-bind="templates"
 				v-model="templates.value"
 				input-label="Template *"
 				:loading="templatesLoading"
-				:disabled="templatesLoading"
-				required />
+				:disabled="templatesLoading || loading" />
 		</div>
 
 		<template #actions>
-			<NcButton @click="closeModal">
+			<NcButton
+				@click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				Annuleer
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
 			<NcButton
-				:disabled="loading || templatesLoading || !templates.value"
+				:disabled="loading"
 				type="primary"
 				@click="downloadPdf()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Download v-if="!loading" :size="20" />
 				</template>
-				Download PDF
+				Download
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -113,7 +116,7 @@ export default {
 		 * Downloads the PDF for the current character using the selected template
 		 */
 		async downloadPdf() {
-			if (!characterStore.characterItem?.id || !this.templates.value?.id) {
+			if (!objectStore.objectItem?.id || !this.templates.value?.id) {
 				this.error = 'Selecteer eerst een template'
 				return
 			}
@@ -121,7 +124,7 @@ export default {
 			this.loading = true
 			try {
 				// Generate PDF download URL using the correct format
-				const pdfUrl = `/index.php/apps/larpingapp/characters/${characterStore.characterItem.id}/download/${this.templates.value.id}`
+				const pdfUrl = `/index.php/apps/larpingapp/characters/${objectStore.objectItem.id}/download/${this.templates.value.id}`
 				
 				// Open PDF in new tab
 				window.open(pdfUrl, '_blank')
@@ -145,18 +148,32 @@ export default {
 		/**
 		 * Fetches the templates from the template store
 		 */
-		fetchTemplates() {
+		async fetchTemplates() {
 			this.templatesLoading = true
 
-			templateStore.refreshTemplateList()
+			// Store current object type
+			const currentType = objectStore.objectType
+			
+			// Switch to template type to fetch templates
+			objectStore.setObjectType('template')
+			await objectStore.refreshObjectList()
 				.then(() => {
 					this.templates = {
-						options: templateStore.templateList.map((template) => ({
+						options: objectStore.objectList.map((template) => ({
 							id: template.id,
 							label: template.name,
 						})),
 					}
 					this.templatesLoading = false
+					
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
+				})
+				.catch((error) => {
+					console.error('Error fetching templates:', error)
+					this.templatesLoading = false
+					// Restore previous object type
+					objectStore.setObjectType(currentType)
 				})
 		},
 	},

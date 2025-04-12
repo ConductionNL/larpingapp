@@ -1,5 +1,8 @@
 <script setup>
-import { characterStore, navigationStore, playerStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore, playerStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -121,13 +124,13 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editCharacter' && !this.hasUpdated) {
-			if (characterStore.characterItem?.id) {
+			if (objectStore.objectItem?.id) {
 				this.characterItem = {
-					...characterStore.characterItem,
-					name: characterStore.characterItem.name || '',
-					description: characterStore.characterItem.description || '',
-					background: characterStore.characterItem.background || '',
-					notice: characterStore.characterItem.notice || '',
+					...objectStore.objectItem,
+					name: objectStore.objectItem.name || '',
+					description: objectStore.objectItem.description || '',
+					background: objectStore.objectItem.background || '',
+					notice: objectStore.objectItem.notice || '',
 				}
 			}
 			this.fetchPlayers()
@@ -154,10 +157,10 @@ export default {
 
 			playerStore.refreshPlayerList()
 				.then(() => {
-					const activatedPlayer = characterStore.characterItem?.id 
+					const activatedPlayer = objectStore.objectItem?.id 
 						? playerStore.playerList.find((player) => 
-							characterStore.characterItem.ocName?.id === player.id ||
-							characterStore.characterItem.ocName?.toString() === player.id.toString()
+							objectStore.objectItem.ocName?.id === player.id ||
+							objectStore.objectItem.ocName?.toString() === player.id.toString()
 						)
 						: null
 
@@ -186,10 +189,14 @@ export default {
 		async editCharacter() {
 			this.loading = true
 			try {
-				await characterStore.saveCharacter({
+				// Set the object type to 'character' before saving
+				objectStore.setObjectType('character')
+				
+				await objectStore.saveObject({
 					...this.characterItem,
 					ocName: this.players?.value?.id || null,
 				})
+				
 				// Close modal or show success message
 				this.success = true
 				this.loading = false

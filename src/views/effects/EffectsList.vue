@@ -1,5 +1,8 @@
 <script setup>
-import { effectStore, searchStore, navigationStore } from '../../store/store.js'
+import { useObjectStore } from '../../store/modules/object.js'
+import { navigationStore } from '../../store/store.js'
+
+const objectStore = useObjectStore()
 </script>
 
 <template>
@@ -7,23 +10,23 @@ import { effectStore, searchStore, navigationStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value="effectStore.searchTerm"
-					:show-trailing-button="effectStore.searchTerm !== ''"
+					:value="objectStore.searchTerm"
+					:show-trailing-button="objectStore.searchTerm !== ''"
 					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
-					@input="effectStore.setSearchTerm($event.target.value)"
-					@trailing-button-click="effectStore.clearSearch()">
+					@input="objectStore.setSearchTerm($event.target.value)"
+					@trailing-button-click="objectStore.clearSearch()">
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="effectStore.refreshEffectList()">
+					<NcActionButton @click="objectStore.refreshObjectList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="effectStore.setEffectItem(null); navigationStore.setModal('editEffect')">
+					<NcActionButton @click="objectStore.setObjectItem(null); navigationStore.setModal('editEffect')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -31,17 +34,17 @@ import { effectStore, searchStore, navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="effectStore.effectList && effectStore.effectList.length > 0 && !effectStore.isLoadingEffectList">
-				<NcListItem v-for="(effect, i) in effectStore.effectList"
+			<div v-if="objectStore.objectList && objectStore.objectList.length > 0 && !objectStore.isLoadingObjectList">
+				<NcListItem v-for="(effect, i) in objectStore.objectList"
 					:key="`${effect}${i}`"
 					:name="effect.name"
-					:active="effectStore.effectItem?.id === effect?.id"
+					:active="objectStore.objectItem?.id === effect?.id"
 					:force-display-actions="true"
 					:details="effect?.modification || ''"
 					:counter-number="effect?.modifier"
-					@click="handleEffectSelect(effect)">
+					@click="objectStore.setObjectItem(effect)">
 					<template #icon>
-						<MagicStaff :class="effectStore.effectItem === effect.id && 'selectedZaakIcon'"
+						<MagicStaff :class="objectStore.objectItem === effect.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -49,13 +52,13 @@ import { effectStore, searchStore, navigationStore } from '../../store/store.js'
 						{{ effect?.name }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="handleEffectSelect(effect); navigationStore.setModal('editEffect')">
+						<NcActionButton @click="objectStore.setObjectItem(effect); navigationStore.setModal('editEffect')">
 							<template #icon>
 								<Pencil />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="handleEffectSelect(effect); navigationStore.setDialog('deleteEffect')">
+						<NcActionButton @click="objectStore.setObjectItem(effect); navigationStore.setDialog('deleteEffect')">
 							<template #icon>
 								<TrashCanOutline />
 							</template>
@@ -66,13 +69,13 @@ import { effectStore, searchStore, navigationStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="effectStore.isLoadingEffectList"
+		<NcLoadingIcon v-if="objectStore.isLoadingObjectList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Effecten aan het laden" />
 
-		<div v-if="effectStore.effectList.length === 0 && !effectStore.isLoadingEffectList">
+		<div v-if="objectStore.objectList.length === 0 && !objectStore.isLoadingObjectList">
 			Er zijn nog geen effecten gedefinieerd.
 		</div>
 	</NcAppContentList>
@@ -88,6 +91,7 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+
 export default {
 	name: 'EffectsList',
 	components: {
@@ -103,44 +107,35 @@ export default {
 		Magnify,
 		Pencil,
 		TrashCanOutline,
+		Plus,
+		Refresh,
 	},
 	mounted() {
-		effectStore.refreshEffectList()
-	},
-	methods: {
-		/**
-		 * Handle effect selection
-		 * @param {object} effect - The selected effect object
-		 * @returns {Promise<void>}
-		 */
-		async handleEffectSelect(effect) {
-			// Set the selected effect in the store
-			effectStore.setEffectItem(effect)
-		},
+		objectStore.refreshObjectList()
 	},
 }
 </script>
 
 <style>
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--OC-margin-20);
+	margin-block-start: var(--OC-margin-20);
 }
 </style>
