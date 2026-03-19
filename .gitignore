@@ -14,3 +14,5 @@ src/data/TempAuthKey.js
 
 *.Identifier
 .claude/worktrees/
+docs/.docusaurus/
+docs/node_modules/

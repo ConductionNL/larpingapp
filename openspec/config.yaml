@@ -45,3 +45,4 @@ rules:
     - Verify stat calculation produces correct audit trails
     - Ensure TypeScript entity classes match JSON schema definitions
     - Test PDF generation with Twig templates when character features change
+    - Follow mandatory task categories from ADRs 005, 009, 010, 011
