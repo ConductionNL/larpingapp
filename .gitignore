@@ -14,3 +14,7 @@ src/data/TempAuthKey.js
 
 *.Identifier
 .claude/worktrees/
+
+.phpunit.cache/
+coverage/
+phpmetrics/
