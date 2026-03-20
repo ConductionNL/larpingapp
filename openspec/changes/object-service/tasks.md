@@ -1,0 +1,1 @@
+- [x] RegisterObjectFetcher unit tests
