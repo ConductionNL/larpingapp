@@ -21,10 +21,15 @@ namespace OCA\LarpingApp\Tests\Unit\Controller;
 
 use OCA\LarpingApp\Controller\SettingsController;
 use OCA\LarpingApp\Service\SettingsService;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IGroupManager;
 use OCP\IRequest;
+use OCP\IUser;
+use OCP\IUserSession;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 /**
  * Tests for SettingsController.
@@ -47,11 +52,39 @@ class SettingsControllerTest extends TestCase
     private IRequest&MockObject $request;
 
     /**
+     * Mock ContainerInterface.
+     *
+     * @var ContainerInterface&MockObject
+     */
+    private ContainerInterface&MockObject $container;
+
+    /**
+     * Mock IAppManager.
+     *
+     * @var IAppManager&MockObject
+     */
+    private IAppManager&MockObject $appManager;
+
+    /**
      * Mock SettingsService.
      *
      * @var SettingsService&MockObject
      */
     private SettingsService&MockObject $settingsService;
+
+    /**
+     * Mock IGroupManager.
+     *
+     * @var IGroupManager&MockObject
+     */
+    private IGroupManager&MockObject $groupManager;
+
+    /**
+     * Mock IUserSession.
+     *
+     * @var IUserSession&MockObject
+     */
+    private IUserSession&MockObject $userSession;
 
     /**
      * Set up test fixtures.
@@ -63,11 +96,19 @@ class SettingsControllerTest extends TestCase
         parent::setUp();
 
         $this->request         = $this->createMock(IRequest::class);
+        $this->container       = $this->createMock(ContainerInterface::class);
+        $this->appManager      = $this->createMock(IAppManager::class);
         $this->settingsService = $this->createMock(SettingsService::class);
+        $this->groupManager    = $this->createMock(IGroupManager::class);
+        $this->userSession     = $this->createMock(IUserSession::class);
 
         $this->controller = new SettingsController(
             request: $this->request,
+            container: $this->container,
+            appManager: $this->appManager,
             settingsService: $this->settingsService,
+            groupManager: $this->groupManager,
+            userSession: $this->userSession,
         );
 
     }//end setUp()
@@ -79,15 +120,24 @@ class SettingsControllerTest extends TestCase
      */
     public function testIndexReturnsJsonResponseWithExpectedKeys(): void
     {
+        $user = $this->createMock(IUser::class);
+        $user->method('getUID')->willReturn('admin');
+
+        $this->userSession->method('getUser')->willReturn($user);
+        $this->groupManager->method('isAdmin')->with('admin')->willReturn(true);
+        $this->appManager->method('getInstalledApps')->willReturn(['openregister']);
+
         $this->settingsService->expects($this->once())
             ->method('getSettings')
-            ->willReturn(['openRegisterUrl' => 'http://localhost']);
+            ->willReturn(['register' => '']);
 
         $result = $this->controller->index();
 
         self::assertInstanceOf(JSONResponse::class, $result);
         self::assertArrayHasKey('objectTypes', $result->getData());
         self::assertArrayHasKey('configuration', $result->getData());
+        self::assertArrayHasKey('openRegisters', $result->getData());
+        self::assertArrayHasKey('isAdmin', $result->getData());
 
     }//end testIndexReturnsJsonResponseWithExpectedKeys()
 
@@ -98,14 +148,17 @@ class SettingsControllerTest extends TestCase
      */
     public function testIndexIncludesAllObjectTypes(): void
     {
+        $this->userSession->method('getUser')->willReturn(null);
+        $this->appManager->method('getInstalledApps')->willReturn([]);
         $this->settingsService->method('getSettings')->willReturn([]);
 
-        $result     = $this->controller->index();
+        $result      = $this->controller->index();
         $objectTypes = $result->getData()['objectTypes'];
 
         self::assertContains('character', $objectTypes);
         self::assertContains('skill', $objectTypes);
         self::assertContains('item', $objectTypes);
+        self::assertCount(9, $objectTypes);
 
     }//end testIndexIncludesAllObjectTypes()
 
@@ -116,7 +169,7 @@ class SettingsControllerTest extends TestCase
      */
     public function testCreateCallsUpdateSettingsAndReturnsSuccess(): void
     {
-        $params = ['openRegisterUrl' => 'http://new-url'];
+        $params = ['register' => 'reg-123'];
 
         $this->request->expects($this->once())
             ->method('getParams')
@@ -155,4 +208,25 @@ class SettingsControllerTest extends TestCase
 
     }//end testCreateReturns500OnException()
 
+    /**
+     * Test that reimport() calls loadSettings with force=true.
+     *
+     * @return void
+     */
+    public function testReimportCallsLoadSettingsWithForce(): void
+    {
+        $this->settingsService->expects($this->once())
+            ->method('loadSettings')
+            ->with(force: true)
+            ->willReturn(['registers' => ['r1'], 'schemas' => ['s1', 's2']]);
+
+        $this->settingsService->method('getSettings')
+            ->willReturn(['register' => '1']);
+
+        $result = $this->controller->reimport();
+
+        self::assertInstanceOf(JSONResponse::class, $result);
+        self::assertTrue($result->getData()['success']);
+
+    }//end testReimportCallsLoadSettingsWithForce()
 }//end class
