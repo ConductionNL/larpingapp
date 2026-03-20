@@ -1,0 +1,3 @@
+- [x] Verify SearchService.php is removed
+- [x] Verify no references to SearchService remain
+- [x] Document spec status changes
