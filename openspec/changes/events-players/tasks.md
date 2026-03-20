@@ -1,0 +1,3 @@
+- [x] CharacterService tests
+- [x] Event entity tests
+- [x] Player entity tests
