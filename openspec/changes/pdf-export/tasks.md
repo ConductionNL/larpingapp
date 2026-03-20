@@ -1,0 +1,1 @@
+- [x] CharactersController downloadPdf tests
