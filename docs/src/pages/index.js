@@ -288,8 +288,7 @@ export default function Home() {
         <DetailHero
           appId="larpingapp"
           background="cobalt"
-          status={{ label: 'Beta', color: 'var(--c-orange-knvb)' }}
-          version="v0.1"
+          /* status + version dropped — preset 2.10+ auto-derives from appinfo/info.xml */
           locales="NL · EN"
           title="LarpingApp"
           tagline={TAGLINE}
