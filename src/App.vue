@@ -1,32 +1,22 @@
 <template>
 	<NcContent app-name="larpingapp">
-		<!-- Empty state: OpenRegister not installed -->
-		<NcAppContent v-if="storesReady && !hasOpenRegisters">
-			<NcEmptyContent
-				class="open-register-missing"
-				:name="t('larpingapp', 'OpenRegister is required')"
-				:description="t('larpingapp', 'LarpingApp needs the OpenRegister app to store and manage data. Please install OpenRegister from the app store to get started.')">
-				<template #icon>
-					<img :src="appIcon" alt="" width="64" height="64">
-				</template>
-				<template #action>
-					<NcButton
-						v-if="isAdmin"
-						type="primary"
-						:href="appStoreUrl">
-						{{ t('larpingapp', 'Install OpenRegister') }}
-					</NcButton>
-				</template>
-			</NcEmptyContent>
-		</NcAppContent>
-		<!-- Normal state: app fully loaded -->
-		<template v-else-if="storesReady">
+		<!-- Normal state: app loaded -->
+		<template v-if="storesReady">
 			<MainMenu @open-settings="showSettingsDialog = true" />
 			<NcAppContent>
+				<NcNoteCard v-if="!hasOpenRegisters" type="warning" class="open-register-warning">
+					{{ t('larpingapp', 'OpenRegister is not configured. Some features may be limited.') }}
+					<NcButton v-if="isAdmin"
+						type="tertiary"
+						:href="appStoreUrl"
+						size="small">
+						{{ t('larpingapp', 'Configure') }}
+					</NcButton>
+				</NcNoteCard>
 				<router-view />
 			</NcAppContent>
 			<CnIndexSidebar
-				v-if="sidebarState.active"
+				v-if="sidebarState.active && !objectSidebarState.active"
 				:schema="sidebarState.schema"
 				:visible-columns="sidebarState.visibleColumns"
 				:search-value="sidebarState.searchValue"
@@ -37,6 +27,16 @@
 				@search="onSidebarSearch"
 				@columns-change="onSidebarColumnsChange"
 				@filter-change="onSidebarFilterChange" />
+			<CnObjectSidebar
+				v-if="objectSidebarState.active"
+				:object-type="objectSidebarState.objectType"
+				:object-id="objectSidebarState.objectId"
+				:title="objectSidebarState.title"
+				:subtitle="objectSidebarState.subtitle"
+				:register="objectSidebarState.register"
+				:schema="objectSidebarState.schema"
+				:hidden-tabs="objectSidebarState.hiddenTabs"
+				:open.sync="objectSidebarState.open" />
 			<UserSettings :open.sync="showSettingsDialog" />
 		</template>
 		<!-- Loading state -->
@@ -50,9 +50,9 @@
 
 <script>
 import Vue from 'vue'
-import { NcContent, NcAppContent, NcLoadingIcon, NcButton, NcEmptyContent } from '@nextcloud/vue'
+import { NcContent, NcAppContent, NcLoadingIcon, NcButton, NcNoteCard } from '@nextcloud/vue'
 import { generateUrl, imagePath } from '@nextcloud/router'
-import { CnIndexSidebar } from '@conduction/nextcloud-vue'
+import { CnIndexSidebar, CnObjectSidebar } from '@conduction/nextcloud-vue'
 import MainMenu from './navigation/MainMenu.vue'
 import UserSettings from './views/settings/UserSettings.vue'
 import { initializeStores } from './store/store.js'
@@ -65,8 +65,9 @@ export default {
 		NcAppContent,
 		NcLoadingIcon,
 		NcButton,
-		NcEmptyContent,
+		NcNoteCard,
 		CnIndexSidebar,
+		CnObjectSidebar,
 		MainMenu,
 		UserSettings,
 	},
@@ -74,6 +75,7 @@ export default {
 	provide() {
 		return {
 			sidebarState: this.sidebarState,
+			objectSidebarState: this.objectSidebarState,
 		}
 	},
 
@@ -92,6 +94,17 @@ export default {
 				onSearch: null,
 				onColumnsChange: null,
 				onFilterChange: null,
+			}),
+			objectSidebarState: Vue.observable({
+				active: false,
+				open: true,
+				objectType: '',
+				objectId: '',
+				title: '',
+				subtitle: '',
+				register: '',
+				schema: '',
+				hiddenTabs: [],
 			}),
 		}
 	},
