@@ -47,7 +47,17 @@
  * runner's own loopback, and there is no shared instance to corrupt. So the
  * fallback is allowed there and NOWHERE else — gated on `CI` /
  * `GITHUB_ACTIONS`, not on "the variable happens to be missing".
+ *
+ * NAMING THE SHARED INSTANCE
+ * --------------------------
+ * Setting a variable TO `http://localhost:8080` off CI is still refused unless
+ * the run also sets LARPINQ_E2E_ALLOW_SHARED_INSTANCE (or the fleet-wide
+ * E2E_ALLOW_SHARED_INSTANCE) to that same origin. No default is not the same
+ * as no accident: an explicit value can name the shared container too. See
+ * tests/e2e/shared-instance.ts.
  */
+
+import { assertInstancePermitted } from './shared-instance.ts'
 
 /** Environment variables consulted, in precedence order. */
 const BASE_URL_VARS = [
@@ -79,7 +89,7 @@ export function resolveBaseURL(): string {
 	for (const name of BASE_URL_VARS) {
 		const value = process.env[name]
 		if (value && value.trim().length > 0) {
-			return value.trim().replace(/\/+$/, '')
+			return assertInstancePermitted(value.trim().replace(/\/+$/, ''))
 		}
 	}
 	if (isCI()) {
